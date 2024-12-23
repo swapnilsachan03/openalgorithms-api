@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "baseUrl": "src",
+    "module": "ES2015",
+    "moduleResolution": "bundler",
+    "baseUrl": "./src",
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es5",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@controllers/*": ["./comtrollers/*"],
+      "@lib/*": ["./lib/*"],
+      "@middlewares/*": ["./middlewares/*"],
+      "@routes/*": ["./routes/*"],
+      "@utils/*": ["./utils/*"]
+    }
   },
   "include": ["src/**/*"]
 }

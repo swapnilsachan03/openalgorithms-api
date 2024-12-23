@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -23,5 +23,5 @@ const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 
 server.listen(port, () => {
-  console.log("Server is running on http://localhost:4000");
+  console.log("Server running on port " + port);
 });
