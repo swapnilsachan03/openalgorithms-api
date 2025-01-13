@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./*"],
-      "@controllers/*": ["./comtrollers/*"],
+      "@controllers/*": ["./controllers/*"],
       "@lib/*": ["./lib/*"],
       "@middlewares/*": ["./middlewares/*"],
       "@routes/*": ["./routes/*"],

@@ -1,0 +1,84 @@
+import { Request, Response } from "express";
+import { sha256 } from "@oslojs/crypto/sha2";
+
+import { prisma } from "@lib/prisma";
+import { createSession, generateSessionToken } from "@utils/auth_utils";
+
+export const registerUser = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (user !== null) {
+    res.status(400).json({ message: "User already exists" });
+    return;
+  }
+
+  const hashedPassword = sha256(new TextEncoder().encode(password)).toString();
+
+  const newUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+      hashedPassword,
+    },
+  });
+
+  const token = generateSessionToken();
+  const session = await createSession(token, newUser.id);
+
+  res.status(200).json({ message: "User created", user: newUser, session });
+};
+
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).json({ message: "Email and password are required" });
+    return;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (user === null) {
+    res.status(401).json({ message: "This user does not exist" });
+    return;
+  }
+
+  const passwordHash = sha256(new TextEncoder().encode(password)).toString();
+
+  if (passwordHash !== user.hashedPassword) {
+    res.status(401).json({ message: "Incorrect password" });
+    return;
+  }
+
+  const token = generateSessionToken();
+  const session = await createSession(token, user.id);
+
+  res.json({ token: session.sessionToken });
+};
+
+export const logoutUser = async (req: Request, res: Response) => {
+  const sessionToken = req.headers.authorization?.split(" ")[1];
+
+  if (!sessionToken) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  await prisma.session.delete({
+    where: {
+      sessionToken,
+    },
+  });
+
+  res.json({ message: "Logged out" });
+};
