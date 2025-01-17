@@ -5,7 +5,7 @@ import { prisma } from "@lib/prisma";
 import { createSession, generateSessionToken } from "@utils/auth_utils";
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, image } = req.body;
 
   const user = await prisma.user.findUnique({
     where: {
@@ -18,6 +18,11 @@ export const registerUser = async (req: Request, res: Response) => {
     return;
   }
 
+  if (!email || !password || !name) {
+    res.status(400).json({ message: "Please enter the required fields" });
+    return;
+  }
+
   const hashedPassword = sha256(new TextEncoder().encode(password)).toString();
 
   const newUser = await prisma.user.create({
@@ -25,13 +30,14 @@ export const registerUser = async (req: Request, res: Response) => {
       name,
       email,
       hashedPassword,
+      image,
     },
   });
 
   const token = generateSessionToken();
-  const session = await createSession(token, newUser.id);
+  await createSession(token, newUser.id);
 
-  res.status(200).json({ message: "User created", user: newUser, session });
+  res.status(200).json({ message: "User created", user: newUser, token });
 };
 
 export const loginUser = async (req: Request, res: Response) => {
@@ -61,9 +67,9 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   const token = generateSessionToken();
-  const session = await createSession(token, user.id);
+  await createSession(token, user.id);
 
-  res.json({ token: session.sessionToken });
+  res.json({ token });
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
