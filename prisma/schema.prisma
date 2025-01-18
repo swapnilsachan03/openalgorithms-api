@@ -20,11 +20,30 @@ model User {
   hashedPassword String?
   emailVerified  DateTime?
   image          String?
-  accounts       Account[]
-  sessions       Session[]
+  role           Role      @default(USER)
+
+  accounts                     Account[]
+  sessions                     Session[]
+  problems                     Problem[]
+  interactedProblems           ProblemInteraction[]
+  bookmarkedProblems           BookmarkedProblem[]
+  submissions                  Submission[]
+  publishedSolutions           PublishedSolution[]
+  editorials                   Editorial[]
+  dailySubmissionCounts        DailySubmissionCount[]
+  submissionStreaks            SubmissionStreak[]
+  discussions                  Discussion[]
+  editorialInteraction         EditorialInteraction[]
+  publishedSolutionInteraction PublishedSolutionInteraction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
 }
 
 model Account {
@@ -52,8 +71,222 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Problem {
+  id                  String  @id @default(cuid())
+  title               String
+  slug                String  @unique
+  description         String
+  createdById         String?
+  timeLimitInSeconds  Int
+  memoryLimitInMB     Int
+  views               Int     @default(0)
+  acceptedSubmissions Int     @default(0)
+  totalSubmissions    Int     @default(0)
+
+  difficulty         Difficulty
+  examples           Example[]
+  createdBy          User?                @relation(fields: [createdById], references: [id])
+  solutions          Solution[]
+  submissions        Submission[]
+  publishedSolutions PublishedSolution[]
+  hints              Hint[]
+  topics             Topic[]
+  editorial          Editorial?
+  discussions        Discussion[]
+  problemInteraction ProblemInteraction[]
+  bookmarkedProblems BookmarkedProblem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Hint {
+  id        String @id @default(cuid())
+  content   String
+  problemId String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Topic {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  problems    Problem[]
+
+  @@unique([name])
+}
+
+model ProblemInteraction {
+  id        String  @id @default(cuid())
+  userId    String
+  problemId String
+  like      Boolean
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, problemId])
+}
+
+model BookmarkedProblem {
+  id        String @id @default(cuid())
+  userId    String
+  problemId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, problemId])
+}
+
+model Example {
+  id        String @id @default(cuid())
+  input     String
+  output    String
+  problemId String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Solution {
+  id        String @id @default(cuid())
+  code      String
+  language  String
+  problemId String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  userId    String
+  problemId String
+  code      String
+  language  String
+  statusId  Int
+  createdAt DateTime @default(now())
+
+  status  Status  @relation(fields: [statusId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model DailySubmissionCount {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model SubmissionStreak {
+  id        String   @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, startDate])
+}
+
+model PublishedSolution {
+  id          String @id @default(cuid())
+  userId      String
+  problemId   String
+  code        String
+  language    String
+  explanation String
+  views       Int    @default(0)
+
+  user                         User                           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem                      Problem                        @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  publishedSolutionInteraction PublishedSolutionInteraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Editorial {
+  id        String  @id @default(cuid())
+  problemId String  @unique
+  content   String
+  authorId  String?
+  views     Int     @default(0)
+
+  author               User?                  @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  problem              Problem                @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  editorialInteraction EditorialInteraction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EditorialInteraction {
+  id          String  @id @default(cuid())
+  editorialId String
+  userId      String
+  liked       Boolean
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  editorial Editorial @relation(fields: [editorialId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, editorialId])
+}
+
+model PublishedSolutionInteraction {
+  id                  String  @id @default(cuid())
+  publishedSolutionId String
+  userId              String
+  liked               Boolean
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  publishedSolution PublishedSolution @relation(fields: [publishedSolutionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, publishedSolutionId])
+}
+
+model Status {
+  id          Int    @id
+  description String
+
+  submissions Submission[]
+}
+
+model Discussion {
+  id        String  @id @default(cuid())
+  problemId String
+  userId    String
+  content   String
+  parentId  String? // For threading
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem     @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  parent  Discussion? @relation("DiscussionThread", fields: [parentId], references: [id], onDelete: SetNull)
+
+  replies Discussion[] @relation("DiscussionThread")
+
+  createdAt DateTime @default(now())
 }
