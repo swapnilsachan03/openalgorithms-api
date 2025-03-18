@@ -1,42 +1,72 @@
-import { Request, Response } from "express";
+import { GraphQLError } from "graphql";
 
 import { prisma } from "@lib/prisma";
+import { User } from "@prisma/client";
+
 import { validateSessionToken } from "@/utils/auth_utils";
+import { AuthContext } from "@/index";
 
-export const getProfile = async (req: Request, res: Response) => {
-  const { userId } = req.body;
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
-  if (user === null) {
-    res.status(404).json({ message: "User not found" });
-    return;
-  }
-
-  res.status(200).json({ user });
+export const getAllUsers = async () => {
+  return await prisma.user.findMany();
 };
 
-export const updateProfile = async (req: Request, res: Response) => {
-  const { userId, name, image } = req.body;
+export const getProfile = async (parent: any, args: { id: string }) => {
+  const { id } = args;
 
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id,
     },
   });
 
   if (user === null) {
-    res.status(404).json({ message: "User not found" });
-    return;
+    throw new GraphQLError("User not found", {
+      extensions: { code: "USER_NOT_FOUND" },
+    });
   }
 
-  await prisma.user.update({
+  return user;
+};
+
+export const getUserSessions = async (parent: User, args: { id: string }) => {
+  const { id } = parent;
+
+  const sessions = await prisma.session.findMany({
     where: {
-      id: userId,
+      userId: id,
+    },
+  });
+
+  return sessions;
+};
+
+export const updateProfile = async (
+  parent: any,
+  args: {
+    input: {
+      id: string;
+      name: string;
+      image: string;
+    };
+  }
+) => {
+  const { id, name, image } = args.input;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (user === null) {
+    throw new GraphQLError("User not found", {
+      extensions: { code: "USER_NOT_FOUND" },
+    });
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id,
     },
     data: {
       name,
@@ -44,25 +74,30 @@ export const updateProfile = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(200).json({ message: "User updated" });
+  return updatedUser;
 };
 
-export const deleteProfile = async (req: Request, res: Response) => {
-  const { userId } = req.body;
-  const token = req.headers.authorization;
+export const deleteProfile = async (
+  parent: any,
+  args: { userId: string },
+  contextValue: any,
+  info: AuthContext
+) => {
+  const { userId } = args;
+  const { token } = info;
 
   if (!userId || !token) {
-    res
-      .status(400)
-      .json({ message: "You are not authorized for this operation" });
-    return;
+    throw new GraphQLError("You are not authorized for this operation", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
   }
 
   const sessionRes = await validateSessionToken(token);
 
   if (sessionRes.user?.id !== userId) {
-    res.status(401).json({ message: "Invalid user ID" });
-    return;
+    throw new GraphQLError("Invalid user ID", {
+      extensions: { code: "UNAUTHORIZED" },
+    });
   }
 
   const user = await prisma.user.findUnique({
@@ -72,8 +107,9 @@ export const deleteProfile = async (req: Request, res: Response) => {
   });
 
   if (user === null) {
-    res.status(404).json({ message: "User not found" });
-    return;
+    throw new GraphQLError("User not found", {
+      extensions: { code: "USER_NOT_FOUND" },
+    });
   }
 
   await prisma.user.delete({
@@ -82,5 +118,8 @@ export const deleteProfile = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(200).json({ message: "User deleted" });
+  return {
+    isSuccess: true,
+    message: "User deleted successfully",
+  };
 };

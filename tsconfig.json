@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "module": "ES2015",
+    "module": "ES2022",
     "moduleResolution": "bundler",
     "baseUrl": "./src",
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
-    "target": "es5",
+    "target": "ES2022",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,6 +16,7 @@
       "@lib/*": ["./lib/*"],
       "@middlewares/*": ["./middlewares/*"],
       "@routes/*": ["./routes/*"],
+      "@graphql/*": ["./graphql/*"],
       "@utils/*": ["./utils/*"]
     }
   },
