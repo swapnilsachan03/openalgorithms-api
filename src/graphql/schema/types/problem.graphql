@@ -75,11 +75,9 @@ type Status {
 
 type PublishedSolution {
   id: ID!
-  userId: ID
+  authorId: ID
   problemId: ID
-  code: String
-  language: String
-  explanation: String
+  content: String
   views: Int
   user: User
   problem: Problem
@@ -91,12 +89,12 @@ type PublishedSolution {
 
 type Editorial {
   id: ID!
-  problemId: ID
   content: String
-  authorId: ID
+  problemId: ID
   views: Int
-  author: User
   problem: Problem
+  likes: Int
+  dislikes: Int
   createdAt: DateTime
   updatedAt: DateTime
 }

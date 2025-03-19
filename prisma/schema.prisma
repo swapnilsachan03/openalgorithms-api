@@ -29,7 +29,6 @@ model User {
   bookmarkedProblems           BookmarkedProblem[]
   submissions                  Submission[]
   publishedSolutions           PublishedSolution[]
-  editorials                   Editorial[]
   dailySubmissionCounts        DailySubmissionCount[]
   submissionStreaks            SubmissionStreak[]
   discussions                  Discussion[]
@@ -188,15 +187,13 @@ model Submission {
 }
 
 model PublishedSolution {
-  id          String @id @default(cuid())
-  userId      String
-  problemId   String
-  code        String
-  language    String
-  explanation String
-  views       Int    @default(0)
+  id        String  @id @default(cuid())
+  authorId  String?
+  problemId String
+  content   String
+  views     Int     @default(0)
 
-  user                         User                           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author                       User?                          @relation(fields: [authorId], references: [id], onDelete: SetNull)
   problem                      Problem                        @relation(fields: [problemId], references: [id], onDelete: Cascade)
   publishedSolutionInteraction PublishedSolutionInteraction[]
 
@@ -205,13 +202,11 @@ model PublishedSolution {
 }
 
 model Editorial {
-  id        String  @id @default(cuid())
-  problemId String  @unique
+  id        String @id @default(cuid())
+  problemId String @unique
   content   String
-  authorId  String?
-  views     Int     @default(0)
+  views     Int    @default(0)
 
-  author               User?                  @relation(fields: [authorId], references: [id], onDelete: SetNull)
   problem              Problem                @relation(fields: [problemId], references: [id], onDelete: Cascade)
   editorialInteraction EditorialInteraction[]
 

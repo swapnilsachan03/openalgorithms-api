@@ -15,7 +15,7 @@ export const createProblem = async (
   const { token } = contextValue;
 
   if (_.isNil(token)) {
-    throw new GraphQLError("You must login to manipulate data", {
+    throw new GraphQLError("You must be logged in to add problems", {
       extensions: { code: "UNAUTHENTICATED" },
     });
   }
