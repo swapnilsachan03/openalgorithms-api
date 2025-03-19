@@ -1,3 +1,5 @@
+import { getAllProblems, getProblem } from "@/controllers/problem_controller";
+
 import {
   getAllUsers,
   getProfile,
@@ -8,6 +10,8 @@ export const queryResolvers = {
   Query: {
     user: getProfile,
     users: getAllUsers,
+    problem: getProblem,
+    problems: getAllProblems,
   },
   User: {
     sessions: getUserSessions,

@@ -3,3 +3,9 @@ enum Role {
   USER
   MODERATOR
 }
+
+enum ProblemDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}

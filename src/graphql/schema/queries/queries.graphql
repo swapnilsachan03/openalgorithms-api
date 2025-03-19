@@ -1,6 +1,9 @@
 # import User from '../types/user.graphql'
+# import Problem from '../types/problem.graphql'
 
 type Query {
   user(id: ID!): User
   users: [User]
+  problem(id: ID!): Problem
+  problems: [Problem]
 }

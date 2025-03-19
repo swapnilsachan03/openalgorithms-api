@@ -1,0 +1,25 @@
+# import ProblemDifficulty from "../enums/global_enums.graphql"
+
+input CreateProblemInput {
+  title: String!
+  slug: String!
+  description: String!
+  createdById: ID!
+  timeLimitInSeconds: Int!
+  memoryLimitInMB: Int!
+  difficulty: ProblemDifficulty!
+  examples: [ExampleInput!]!
+  solutions: [SolutionInput!]!
+  hints: [String!]!
+  topics: [String!]!
+}
+
+input ExampleInput {
+  input: String!
+  output: String!
+}
+
+input SolutionInput {
+  code: String!
+  language: String!
+}

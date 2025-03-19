@@ -1,6 +1,10 @@
 # import User from "../types/user.graphql"
+# import Problem from "../types/problem.graphql"
+
 # import UpdateProfileInput from "../inputs/user_inputs.graphql"
+# import CreateProblemInput from "../inputs/problem_inputs.graphql"
 
 type Mutation {
   updateProfile(input: UpdateProfileInput): User
+  createProblem(input: CreateProblemInput): Problem
 }

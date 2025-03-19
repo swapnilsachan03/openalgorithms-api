@@ -94,7 +94,7 @@ export const deleteProfile = async (
 
   const sessionRes = await validateSessionToken(token);
 
-  if (sessionRes.user?.id !== userId) {
+  if (sessionRes?.user?.id !== userId) {
     throw new GraphQLError("Invalid user ID", {
       extensions: { code: "UNAUTHORIZED" },
     });
