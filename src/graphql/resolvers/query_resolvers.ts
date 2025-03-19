@@ -1,4 +1,18 @@
-import { getAllProblems, getProblem } from "@/controllers/problem_controller";
+import {
+  getAllProblems,
+  getProblem,
+  getProblemBookmarksCount,
+  getProblemCreatedBy,
+  getProblemDiscussions,
+  getProblemDislikes,
+  getProblemEditorial,
+  getProblemExamples,
+  getProblemHints,
+  getProblemLikes,
+  getProblemPublishedSolutions,
+  getProblemSolutions,
+  getProblemTopics,
+} from "@/controllers/problem_controller";
 
 import {
   getAllUsers,
@@ -15,5 +29,18 @@ export const queryResolvers = {
   },
   User: {
     sessions: getUserSessions,
+  },
+  Problem: {
+    createdBy: getProblemCreatedBy,
+    likes: getProblemLikes,
+    dislikes: getProblemDislikes,
+    bookmarks: getProblemBookmarksCount,
+    examples: getProblemExamples,
+    solutions: getProblemSolutions,
+    publishedSolutions: getProblemPublishedSolutions,
+    hints: getProblemHints,
+    topics: getProblemTopics,
+    editorial: getProblemEditorial,
+    discussions: getProblemDiscussions,
   },
 };

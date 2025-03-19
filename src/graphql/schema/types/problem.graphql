@@ -20,9 +20,8 @@ type Problem {
 
   examples: [Example]
   solutions: [Solution]
-  submissions: [Submission]
   publishedSolutions: [PublishedSolution]
-  hints: [String]
+  hints: [Hint]
   topics: [String]
   editorial: Editorial
   discussions: [Discussion]
