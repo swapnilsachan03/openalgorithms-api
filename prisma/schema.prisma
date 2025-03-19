@@ -187,31 +187,6 @@ model Submission {
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 }
 
-model DailySubmissionCount {
-  id        String   @id @default(cuid())
-  userId    String
-  date      DateTime
-  count     Int
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, date])
-}
-
-model SubmissionStreak {
-  id        String   @id @default(cuid())
-  userId    String
-  startDate DateTime
-  endDate   DateTime
-  count     Int
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, startDate])
-}
-
 model PublishedSolution {
   id          String @id @default(cuid())
   userId      String
@@ -244,6 +219,47 @@ model Editorial {
   updatedAt DateTime @updatedAt
 }
 
+model Discussion {
+  id        String  @id @default(cuid())
+  problemId String
+  userId    String
+  content   String
+  parentId  String? // For threading
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem     @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  parent  Discussion? @relation("DiscussionThread", fields: [parentId], references: [id], onDelete: SetNull)
+
+  replies Discussion[] @relation("DiscussionThread")
+
+  createdAt DateTime @default(now())
+}
+
+model DailySubmissionCount {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model SubmissionStreak {
+  id        String   @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  count     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, startDate])
+}
+
 model EditorialInteraction {
   id          String  @id @default(cuid())
   editorialId String
@@ -270,23 +286,8 @@ model PublishedSolutionInteraction {
 
 model Status {
   id          Int    @id
+  name        String
   description String
 
   submissions Submission[]
-}
-
-model Discussion {
-  id        String  @id @default(cuid())
-  problemId String
-  userId    String
-  content   String
-  parentId  String? // For threading
-
-  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problem Problem     @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  parent  Discussion? @relation("DiscussionThread", fields: [parentId], references: [id], onDelete: SetNull)
-
-  replies Discussion[] @relation("DiscussionThread")
-
-  createdAt DateTime @default(now())
 }
