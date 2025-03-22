@@ -58,7 +58,7 @@ app.use(
   express.json(),
   expressMiddleware(apolloServer, {
     context: async ({ req }) => {
-      return { token: req.headers.authorization?.split(" ")[1] };
+      return { token: req.headers.authorization };
     },
   })
 );
