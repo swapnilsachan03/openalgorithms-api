@@ -78,6 +78,14 @@ export type GenericResponse = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type GetAllProblemsFilterInput = {
+  difficulty?: InputMaybe<ProblemDifficulty>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  skip: Scalars['Int']['input'];
+  take: Scalars['Int']['input'];
+  topics?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
 export type Hint = {
   __typename?: 'Hint';
   content?: Maybe<Scalars['String']['output']>;
@@ -167,6 +175,11 @@ export type Query = {
 
 export type QueryProblemArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryProblemsArgs = {
+  filters: GetAllProblemsFilterInput;
 };
 
 
@@ -328,6 +341,7 @@ export type ResolversTypes = {
   Example: ResolverTypeWrapper<Example>;
   ExampleInput: ExampleInput;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
+  GetAllProblemsFilterInput: GetAllProblemsFilterInput;
   Hint: ResolverTypeWrapper<Hint>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -357,6 +371,7 @@ export type ResolversParentTypes = {
   Example: Example;
   ExampleInput: ExampleInput;
   GenericResponse: GenericResponse;
+  GetAllProblemsFilterInput: GetAllProblemsFilterInput;
   Hint: Hint;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -462,7 +477,7 @@ export type ProblemResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, RequireFields<QueryProblemArgs, 'id'>>;
-  problems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Problem']>>>, ParentType, ContextType>;
+  problems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Problem']>>>, ParentType, ContextType, RequireFields<QueryProblemsArgs, 'filters'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };

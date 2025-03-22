@@ -4,9 +4,13 @@ import { GraphQLError } from "graphql";
 
 import { prisma } from "@/lib/prisma";
 import { validateSessionToken } from "@/utils/auth_utils";
-
-import { CreateProblemInput, UpdateProblemInput } from "@/generated/graphql";
 import { AuthContext } from "@/index";
+
+import {
+  CreateProblemInput,
+  GetAllProblemsFilterInput,
+  UpdateProblemInput,
+} from "@/generated/graphql";
 
 export const createProblem = async (
   parent: any,
@@ -154,13 +158,40 @@ export const getProblem = async (parent: any, args: { id: string }) => {
 
 export const getAllProblems = async (
   parent: any,
-  args: { filters: any },
-  contextValue: AuthContext,
-  info: any
+  args: {
+    filters: GetAllProblemsFilterInput;
+  }
 ) => {
-  const problems = await prisma.problem.findMany();
+  const { skip = 0, take = 10, search = "", difficulty, topics } = args.filters;
 
-  return problems;
+  const whereClause = {
+    ...(search ? { title: { contains: search } } : {}),
+    ...(difficulty ? { difficulty: { equals: difficulty } } : {}),
+    ...(topics ? { topics: { some: { id: { in: topics } } } } : {}),
+  };
+
+  const [problems, totalCount] = await Promise.all([
+    prisma.problem.findMany({
+      skip,
+      take,
+      where: whereClause,
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+    prisma.problem.count(),
+  ]);
+
+  return {
+    edges: problems,
+    pageInfo: {
+      totalCount,
+      fetchedCount: problems.length,
+      hasNextPage: skip + take < totalCount,
+      currentPage: Math.floor(skip / take) + 1,
+      totalPages: Math.ceil(totalCount / take),
+    },
+  };
 };
 
 export const getProblemCreatedBy = async (parent: Problem) => {

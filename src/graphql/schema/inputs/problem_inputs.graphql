@@ -37,3 +37,11 @@ input SolutionInput {
   code: String!
   language: String!
 }
+
+input GetAllProblemsFilterInput {
+  difficulty: ProblemDifficulty
+  topics: [ID!]
+  search: String
+  skip: Int!
+  take: Int!
+}

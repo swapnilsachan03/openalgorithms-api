@@ -2,3 +2,11 @@ type GenericResponse {
   isSuccess: Boolean!
   message: String
 }
+
+type PageInfo {
+  totalCount: Int!
+  fetchedCount: Int!
+  hasNextPage: Boolean!
+  currentPage: Int!
+  totalPages: Int!
+}
