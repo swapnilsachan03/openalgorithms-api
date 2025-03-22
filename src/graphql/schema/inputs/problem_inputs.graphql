@@ -16,16 +16,16 @@ input CreateProblemInput {
 
 input UpdateProblemInput {
   id: ID!
-  title: String
-  slug: String
-  description: String
-  timeLimitInSeconds: Int
-  memoryLimitInMB: Int
-  difficulty: ProblemDifficulty
-  examples: [ExampleInput!]
-  solutions: [SolutionInput!]
-  hints: [String!]
-  topics: [String!]
+  title: String!
+  slug: String!
+  description: String!
+  timeLimitInSeconds: Int!
+  memoryLimitInMB: Int!
+  difficulty: ProblemDifficulty!
+  examples: [ExampleInput!]!
+  solutions: [SolutionInput!]!
+  hints: [String!]!
+  topics: [String!]!
 }
 
 input ExampleInput {

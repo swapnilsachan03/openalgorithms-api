@@ -1,10 +1,12 @@
-import { CreateProblemInput } from "@/generated/graphql";
-import { AuthContext } from "@/index";
-import { prisma } from "@/lib/prisma";
-import { validateSessionToken } from "@/utils/auth_utils";
+import _ from "lodash";
 import { Problem } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import _ from "lodash";
+
+import { prisma } from "@/lib/prisma";
+import { validateSessionToken } from "@/utils/auth_utils";
+
+import { CreateProblemInput, UpdateProblemInput } from "@/generated/graphql";
+import { AuthContext } from "@/index";
 
 export const createProblem = async (
   parent: any,
@@ -73,12 +75,74 @@ export const createProblem = async (
   return problem;
 };
 
-export const getProblem = async (
+export const updateProblem = async (
   parent: any,
-  args: { id: string },
+  args: { input: UpdateProblemInput },
   contextValue: AuthContext,
   info: any
 ) => {
+  const { token } = contextValue;
+
+  if (_.isNil(token)) {
+    throw new GraphQLError("You must be logged in to update problems", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
+  }
+
+  const sessionRes = await validateSessionToken(token);
+
+  if (!sessionRes?.user || sessionRes.user.role !== "ADMIN") {
+    throw new GraphQLError("You are not authorized for this operation", {
+      extensions: { code: "UNAUTHORIZED" },
+    });
+  }
+
+  const {
+    id,
+    title,
+    slug,
+    description,
+    timeLimitInSeconds,
+    memoryLimitInMB,
+    difficulty,
+    examples,
+    solutions,
+    hints,
+    topics,
+  } = args.input;
+
+  const hintsInput = hints.map(hint => ({
+    content: hint,
+  }));
+
+  const topicsInput = topics.map(id => ({ id }));
+
+  const problem = await prisma.problem.update({
+    where: { id },
+    data: {
+      title,
+      slug,
+      description,
+      timeLimitInSeconds,
+      memoryLimitInMB,
+      difficulty,
+      examples: {
+        create: examples,
+      },
+      solutions: {
+        create: solutions,
+      },
+      hints: { createMany: { data: hintsInput } },
+      topics: {
+        connect: topicsInput,
+      },
+    },
+  });
+
+  return problem;
+};
+
+export const getProblem = async (parent: any, args: { id: string }) => {
   const { id } = args;
 
   const problem = await prisma.problem.findUnique({
@@ -90,7 +154,7 @@ export const getProblem = async (
 
 export const getAllProblems = async (
   parent: any,
-  args: any,
+  args: { filters: any },
   contextValue: AuthContext,
   info: any
 ) => {

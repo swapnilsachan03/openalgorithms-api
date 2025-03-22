@@ -87,15 +87,14 @@ export type Hint = {
 
 export type LikeDislikeInput = {
   entityId: Scalars['ID']['input'];
-  userId: Scalars['ID']['input'];
+  like: Scalars['Boolean']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createProblem?: Maybe<Problem>;
   deleteProblem?: Maybe<GenericResponse>;
-  dislikeProblem?: Maybe<GenericResponse>;
-  likeProblem?: Maybe<GenericResponse>;
+  likeDislikeProblem?: Maybe<GenericResponse>;
   updateProblem?: Maybe<Problem>;
   updateProfile?: Maybe<User>;
 };
@@ -111,12 +110,7 @@ export type MutationDeleteProblemArgs = {
 };
 
 
-export type MutationDislikeProblemArgs = {
-  input?: InputMaybe<LikeDislikeInput>;
-};
-
-
-export type MutationLikeProblemArgs = {
+export type MutationLikeDislikeProblemArgs = {
   input?: InputMaybe<LikeDislikeInput>;
 };
 
@@ -210,17 +204,17 @@ export type SolutionInput = {
 };
 
 export type UpdateProblemInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  difficulty?: InputMaybe<ProblemDifficulty>;
-  examples?: InputMaybe<Array<ExampleInput>>;
-  hints?: InputMaybe<Array<Scalars['String']['input']>>;
+  description: Scalars['String']['input'];
+  difficulty: ProblemDifficulty;
+  examples: Array<ExampleInput>;
+  hints: Array<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
-  memoryLimitInMB?: InputMaybe<Scalars['Int']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
-  solutions?: InputMaybe<Array<SolutionInput>>;
-  timeLimitInSeconds?: InputMaybe<Scalars['Int']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  topics?: InputMaybe<Array<Scalars['String']['input']>>;
+  memoryLimitInMB: Scalars['Int']['input'];
+  slug: Scalars['String']['input'];
+  solutions: Array<SolutionInput>;
+  timeLimitInSeconds: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  topics: Array<Scalars['String']['input']>;
 };
 
 export type UpdateProfileInput = {
@@ -233,7 +227,7 @@ export type User = {
   __typename?: 'User';
   email?: Maybe<Scalars['String']['output']>;
   emailVerified?: Maybe<Scalars['Boolean']['output']>;
-  id?: Maybe<Scalars['ID']['output']>;
+  id: Scalars['ID']['output'];
   image?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Role>;
@@ -435,8 +429,7 @@ export type HintResolvers<ContextType = any, ParentType extends ResolversParentT
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationCreateProblemArgs>>;
   deleteProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProblemArgs, 'id'>>;
-  dislikeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationDislikeProblemArgs>>;
-  likeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationLikeProblemArgs>>;
+  likeDislikeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationLikeDislikeProblemArgs>>;
   updateProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationUpdateProblemArgs>>;
   updateProfile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateProfileArgs>>;
 };
@@ -495,7 +488,7 @@ export type SolutionResolvers<ContextType = any, ParentType extends ResolversPar
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   emailVerified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>;

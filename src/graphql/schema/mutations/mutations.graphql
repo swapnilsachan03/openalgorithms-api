@@ -16,16 +16,14 @@ type Mutation {
   createProblem(input: CreateProblemInput): Problem
   updateProblem(input: UpdateProblemInput): Problem
   deleteProblem(id: ID!): GenericResponse
-  likeProblem(input: LikeDislikeInput): GenericResponse
-  dislikeProblem(input: LikeDislikeInput): GenericResponse
+  likeDislikeProblem(input: LikeDislikeInput): GenericResponse
 
   # To-Dos
 
   # createSubmission(input: CreateSubmissionInput): Submission
   # createComment(input: CreateCommentInput): GenericResponse
   # deleteComment(input: DeleteCommentInput): GenericResponse
-  # likeComment(input: CreateLikeInput): GenericResponse
-  # dislikeComment(input: CreateDislikeInput): GenericResponse
-  # likeUserSolution(input: CreateLikeInput): GenericResponse
-  # dislikeUserSolution(input: CreateDislikeInput): GenericResponse
+  # likeDislikeComment(input: CreateLikeInput): GenericResponse
+  # likeDislikeUserSolution(input: CreateLikeInput): GenericResponse
+  # deleteProfile(id: ID!): GenericResponse
 }

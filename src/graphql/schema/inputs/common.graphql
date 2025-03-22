@@ -1,4 +1,4 @@
 input LikeDislikeInput {
   entityId: ID!
-  userId: ID!
+  like: Boolean!
 }
