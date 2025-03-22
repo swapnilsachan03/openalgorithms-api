@@ -1,4 +1,8 @@
-import { createProblem, updateProblem } from "@/controllers/problem_controller";
+import {
+  createProblem,
+  deleteProblem,
+  updateProblem,
+} from "@/controllers/problem_controller";
 
 import {
   likeDislikeProblem,
@@ -10,6 +14,7 @@ export const mutationResolvers = {
     updateProfile,
     createProblem,
     updateProblem,
+    deleteProblem,
     likeDislikeProblem,
   },
 };

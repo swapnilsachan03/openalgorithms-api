@@ -146,6 +146,36 @@ export const updateProblem = async (
   return problem;
 };
 
+export const deleteProblem = async (
+  parent: any,
+  args: { id: string },
+  contextValue: AuthContext
+) => {
+  const { token } = contextValue;
+
+  if (_.isNil(token)) {
+    throw new GraphQLError("You must be logged in to delete problems", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
+  }
+
+  const sessionRes = await validateSessionToken(token);
+
+  if (!sessionRes?.user || sessionRes.user.role !== "ADMIN") {
+    throw new GraphQLError("You are not authorized for this operation", {
+      extensions: { code: "UNAUTHORIZED" },
+    });
+  }
+
+  const { id } = args;
+
+  const problem = await prisma.problem.delete({
+    where: { id },
+  });
+
+  return { isSuccess: !!problem, message: "Problem deleted successfully" };
+};
+
 export const getProblem = async (parent: any, args: { id: string }) => {
   const { id } = args;
 
