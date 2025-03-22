@@ -48,11 +48,11 @@ export type Discussion = {
 
 export type Editorial = {
   __typename?: 'Editorial';
-  author?: Maybe<User>;
-  authorId?: Maybe<Scalars['ID']['output']>;
   content?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  dislikes?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
+  likes?: Maybe<Scalars['Int']['output']>;
   problem?: Maybe<Problem>;
   problemId?: Maybe<Scalars['ID']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -72,15 +72,57 @@ export type ExampleInput = {
   output: Scalars['String']['input'];
 };
 
+export type GenericResponse = {
+  __typename?: 'GenericResponse';
+  isSuccess: Scalars['Boolean']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+};
+
+export type Hint = {
+  __typename?: 'Hint';
+  content?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  problemId?: Maybe<Scalars['ID']['output']>;
+};
+
+export type LikeDislikeInput = {
+  entityId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createProblem?: Maybe<Problem>;
+  deleteProblem?: Maybe<GenericResponse>;
+  dislikeProblem?: Maybe<GenericResponse>;
+  likeProblem?: Maybe<GenericResponse>;
+  updateProblem?: Maybe<Problem>;
   updateProfile?: Maybe<User>;
 };
 
 
 export type MutationCreateProblemArgs = {
   input?: InputMaybe<CreateProblemInput>;
+};
+
+
+export type MutationDeleteProblemArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDislikeProblemArgs = {
+  input?: InputMaybe<LikeDislikeInput>;
+};
+
+
+export type MutationLikeProblemArgs = {
+  input?: InputMaybe<LikeDislikeInput>;
+};
+
+
+export type MutationUpdateProblemArgs = {
+  input?: InputMaybe<UpdateProblemInput>;
 };
 
 
@@ -100,18 +142,17 @@ export type Problem = {
   dislikes?: Maybe<Scalars['Int']['output']>;
   editorial?: Maybe<Editorial>;
   examples?: Maybe<Array<Maybe<Example>>>;
-  hints?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  hints?: Maybe<Array<Maybe<Hint>>>;
   id: Scalars['ID']['output'];
   likes?: Maybe<Scalars['Int']['output']>;
   memoryLimitInMB?: Maybe<Scalars['Int']['output']>;
-  publishedSolutions?: Maybe<Array<Maybe<PublishedSolution>>>;
   slug?: Maybe<Scalars['String']['output']>;
   solutions?: Maybe<Array<Maybe<Solution>>>;
-  submissions?: Maybe<Array<Maybe<Submission>>>;
   timeLimitInSeconds?: Maybe<Scalars['Int']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   topics?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   totalSubmissions?: Maybe<Scalars['Int']['output']>;
+  userSolutions?: Maybe<Array<Maybe<UserSolution>>>;
   views?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -121,27 +162,17 @@ export enum ProblemDifficulty {
   Medium = 'MEDIUM'
 }
 
-export type PublishedSolution = {
-  __typename?: 'PublishedSolution';
-  code?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
-  dislikes?: Maybe<Scalars['Int']['output']>;
-  explanation?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  language?: Maybe<Scalars['String']['output']>;
-  likes?: Maybe<Scalars['Int']['output']>;
-  problem?: Maybe<Problem>;
-  problemId?: Maybe<Scalars['ID']['output']>;
-  updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  user?: Maybe<User>;
-  userId?: Maybe<Scalars['ID']['output']>;
-  views?: Maybe<Scalars['Int']['output']>;
-};
-
 export type Query = {
   __typename?: 'Query';
+  problem?: Maybe<Problem>;
+  problems?: Maybe<Array<Maybe<Problem>>>;
   user?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type QueryProblemArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -178,24 +209,18 @@ export type SolutionInput = {
   language: Scalars['String']['input'];
 };
 
-export type Status = {
-  __typename?: 'Status';
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  name?: Maybe<Scalars['String']['output']>;
-};
-
-export type Submission = {
-  __typename?: 'Submission';
-  code?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  language?: Maybe<Scalars['String']['output']>;
-  problemId?: Maybe<Scalars['ID']['output']>;
-  status?: Maybe<Status>;
-  statusId?: Maybe<Scalars['Int']['output']>;
-  user?: Maybe<User>;
-  userId?: Maybe<Scalars['ID']['output']>;
+export type UpdateProblemInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  difficulty?: InputMaybe<ProblemDifficulty>;
+  examples?: InputMaybe<Array<ExampleInput>>;
+  hints?: InputMaybe<Array<Scalars['String']['input']>>;
+  id: Scalars['ID']['input'];
+  memoryLimitInMB?: InputMaybe<Scalars['Int']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  solutions?: InputMaybe<Array<SolutionInput>>;
+  timeLimitInSeconds?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  topics?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdateProfileInput = {
@@ -213,6 +238,21 @@ export type User = {
   name?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Role>;
   sessions?: Maybe<Array<Maybe<Session>>>;
+};
+
+export type UserSolution = {
+  __typename?: 'UserSolution';
+  authorId?: Maybe<Scalars['ID']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  dislikes?: Maybe<Scalars['Int']['output']>;
+  id: Scalars['ID']['output'];
+  likes?: Maybe<Scalars['Int']['output']>;
+  problem?: Maybe<Problem>;
+  problemId?: Maybe<Scalars['ID']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<User>;
+  views?: Maybe<Scalars['Int']['output']>;
 };
 
 
@@ -293,22 +333,24 @@ export type ResolversTypes = {
   Editorial: ResolverTypeWrapper<Editorial>;
   Example: ResolverTypeWrapper<Example>;
   ExampleInput: ExampleInput;
+  GenericResponse: ResolverTypeWrapper<GenericResponse>;
+  Hint: ResolverTypeWrapper<Hint>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LikeDislikeInput: LikeDislikeInput;
   Mutation: ResolverTypeWrapper<{}>;
   Problem: ResolverTypeWrapper<Problem>;
   ProblemDifficulty: ProblemDifficulty;
-  PublishedSolution: ResolverTypeWrapper<PublishedSolution>;
   Query: ResolverTypeWrapper<{}>;
   Role: Role;
   Session: ResolverTypeWrapper<Session>;
   Solution: ResolverTypeWrapper<Solution>;
   SolutionInput: SolutionInput;
-  Status: ResolverTypeWrapper<Status>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Submission: ResolverTypeWrapper<Submission>;
+  UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   User: ResolverTypeWrapper<User>;
+  UserSolution: ResolverTypeWrapper<UserSolution>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -320,20 +362,22 @@ export type ResolversParentTypes = {
   Editorial: Editorial;
   Example: Example;
   ExampleInput: ExampleInput;
+  GenericResponse: GenericResponse;
+  Hint: Hint;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  LikeDislikeInput: LikeDislikeInput;
   Mutation: {};
   Problem: Problem;
-  PublishedSolution: PublishedSolution;
   Query: {};
   Session: Session;
   Solution: Solution;
   SolutionInput: SolutionInput;
-  Status: Status;
   String: Scalars['String']['output'];
-  Submission: Submission;
+  UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   User: User;
+  UserSolution: UserSolution;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -355,11 +399,11 @@ export type DiscussionResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type EditorialResolvers<ContextType = any, ParentType extends ResolversParentTypes['Editorial'] = ResolversParentTypes['Editorial']> = {
-  author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  authorId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dislikes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
@@ -375,8 +419,25 @@ export type ExampleResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GenericResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['GenericResponse'] = ResolversParentTypes['GenericResponse']> = {
+  isSuccess?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HintResolvers<ContextType = any, ParentType extends ResolversParentTypes['Hint'] = ResolversParentTypes['Hint']> = {
+  content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationCreateProblemArgs>>;
+  deleteProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProblemArgs, 'id'>>;
+  dislikeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationDislikeProblemArgs>>;
+  likeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationLikeProblemArgs>>;
+  updateProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationUpdateProblemArgs>>;
   updateProfile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateProfileArgs>>;
 };
 
@@ -391,40 +452,24 @@ export type ProblemResolvers<ContextType = any, ParentType extends ResolversPare
   dislikes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   editorial?: Resolver<Maybe<ResolversTypes['Editorial']>, ParentType, ContextType>;
   examples?: Resolver<Maybe<Array<Maybe<ResolversTypes['Example']>>>, ParentType, ContextType>;
-  hints?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  hints?: Resolver<Maybe<Array<Maybe<ResolversTypes['Hint']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   memoryLimitInMB?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  publishedSolutions?: Resolver<Maybe<Array<Maybe<ResolversTypes['PublishedSolution']>>>, ParentType, ContextType>;
   slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   solutions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Solution']>>>, ParentType, ContextType>;
-  submissions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Submission']>>>, ParentType, ContextType>;
   timeLimitInSeconds?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   topics?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   totalSubmissions?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  views?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type PublishedSolutionResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublishedSolution'] = ResolversParentTypes['PublishedSolution']> = {
-  code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  dislikes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType>;
-  problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  userSolutions?: Resolver<Maybe<Array<Maybe<ResolversTypes['UserSolution']>>>, ParentType, ContextType>;
   views?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, RequireFields<QueryProblemArgs, 'id'>>;
+  problems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Problem']>>>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };
@@ -447,26 +492,6 @@ export type SolutionResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['Status'] = ResolversParentTypes['Status']> = {
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SubmissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Submission'] = ResolversParentTypes['Submission']> = {
-  code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  status?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
-  statusId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   emailVerified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -478,19 +503,34 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserSolutionResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserSolution'] = ResolversParentTypes['UserSolution']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dislikes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType>;
+  problemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  views?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Discussion?: DiscussionResolvers<ContextType>;
   Editorial?: EditorialResolvers<ContextType>;
   Example?: ExampleResolvers<ContextType>;
+  GenericResponse?: GenericResponseResolvers<ContextType>;
+  Hint?: HintResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Problem?: ProblemResolvers<ContextType>;
-  PublishedSolution?: PublishedSolutionResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   Solution?: SolutionResolvers<ContextType>;
-  Status?: StatusResolvers<ContextType>;
-  Submission?: SubmissionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserSolution?: UserSolutionResolvers<ContextType>;
 };
 

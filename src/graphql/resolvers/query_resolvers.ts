@@ -9,7 +9,7 @@ import {
   getProblemExamples,
   getProblemHints,
   getProblemLikes,
-  getProblemPublishedSolutions,
+  getProblemUserSolutions,
   getProblemSolutions,
   getProblemTopics,
 } from "@/controllers/problem_controller";
@@ -37,7 +37,7 @@ export const queryResolvers = {
     bookmarks: getProblemBookmarksCount,
     examples: getProblemExamples,
     solutions: getProblemSolutions,
-    publishedSolutions: getProblemPublishedSolutions,
+    userSolutions: getProblemUserSolutions,
     hints: getProblemHints,
     topics: getProblemTopics,
     editorial: getProblemEditorial,

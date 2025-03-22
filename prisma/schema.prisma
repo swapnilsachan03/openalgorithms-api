@@ -22,18 +22,18 @@ model User {
   image          String?
   role           Role      @default(USER)
 
-  accounts                     Account[]
-  sessions                     Session[]
-  problems                     Problem[]
-  interactedProblems           ProblemInteraction[]
-  bookmarkedProblems           BookmarkedProblem[]
-  submissions                  Submission[]
-  publishedSolutions           PublishedSolution[]
-  dailySubmissionCounts        DailySubmissionCount[]
-  submissionStreaks            SubmissionStreak[]
-  discussions                  Discussion[]
-  editorialInteraction         EditorialInteraction[]
-  publishedSolutionInteraction PublishedSolutionInteraction[]
+  accounts                Account[]
+  sessions                Session[]
+  problems                Problem[]
+  interactedProblems      ProblemInteraction[]
+  bookmarkedProblems      BookmarkedProblem[]
+  submissions             Submission[]
+  userSolutions           UserSolution[]
+  dailySubmissionCounts   DailySubmissionCount[]
+  submissionStreaks       SubmissionStreak[]
+  discussions             Discussion[]
+  editorialInteraction    EditorialInteraction[]
+  userSolutionInteraction UserSolutionInteraction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,7 +94,7 @@ model Problem {
   createdBy          User?                @relation(fields: [createdById], references: [id])
   solutions          Solution[]
   submissions        Submission[]
-  publishedSolutions PublishedSolution[]
+  userSolutions      UserSolution[]
   hints              Hint[]
   topics             Topic[]
   editorial          Editorial?
@@ -173,29 +173,29 @@ model Solution {
 }
 
 model Submission {
-  id        String   @id @default(cuid())
+  id        String           @id @default(cuid())
   userId    String
   problemId String
   code      String
   language  String
-  statusId  Int
-  createdAt DateTime @default(now())
+  status    SubmissionStatus
+  verdict   Boolean?
+  createdAt DateTime         @default(now())
 
-  status  Status  @relation(fields: [statusId], references: [id])
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 }
 
-model PublishedSolution {
+model UserSolution {
   id        String  @id @default(cuid())
   authorId  String?
   problemId String
   content   String
   views     Int     @default(0)
 
-  author                       User?                          @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  problem                      Problem                        @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  publishedSolutionInteraction PublishedSolutionInteraction[]
+  author                  User?                     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  problem                 Problem                   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  userSolutionInteraction UserSolutionInteraction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -267,22 +267,26 @@ model EditorialInteraction {
   @@unique([userId, editorialId])
 }
 
-model PublishedSolutionInteraction {
-  id                  String  @id @default(cuid())
-  publishedSolutionId String
-  userId              String
-  liked               Boolean
+model UserSolutionInteraction {
+  id             String  @id @default(cuid())
+  userSolutionId String
+  userId         String
+  liked          Boolean
 
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  publishedSolution PublishedSolution @relation(fields: [publishedSolutionId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userSolution UserSolution @relation(fields: [userSolutionId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, publishedSolutionId])
+  @@unique([userId, userSolutionId])
 }
 
-model Status {
-  id          Int    @id
-  name        String
-  description String
-
-  submissions Submission[]
+enum SubmissionStatus {
+  PENDING
+  JUDGING
+  ACCEPTED
+  WRONG_ANSWER
+  RUNTIME_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  COMPILATION_ERROR
+  INTERNAL_ERROR
 }

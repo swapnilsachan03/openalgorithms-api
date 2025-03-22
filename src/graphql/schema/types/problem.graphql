@@ -1,5 +1,6 @@
 # import User from "../types/user.graphql"
 # import ProblemDifficulty from "../enums/global_enums.graphql"
+# import SubmissionStatus from "../enums/global_enums.graphql"
 
 type Problem {
   id: ID!
@@ -20,7 +21,7 @@ type Problem {
 
   examples: [Example]
   solutions: [Solution]
-  publishedSolutions: [PublishedSolution]
+  userSolutions: [UserSolution]
   hints: [Hint]
   topics: [String]
   editorial: Editorial
@@ -61,19 +62,13 @@ type Submission {
   problemId: ID
   code: String
   language: String
-  statusId: Int
+  status: SubmissionStatus
+  verdict: Boolean
   createdAt: DateTime
-  status: Status
   user: User
 }
 
-type Status {
-  id: ID!
-  name: String
-  description: String
-}
-
-type PublishedSolution {
+type UserSolution {
   id: ID!
   authorId: ID
   problemId: ID

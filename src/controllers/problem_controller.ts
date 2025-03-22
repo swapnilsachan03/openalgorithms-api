@@ -163,10 +163,10 @@ export const getProblemSolutions = async (parent: Problem) => {
   return solutions;
 };
 
-export const getProblemPublishedSolutions = async (parent: Problem) => {
+export const getProblemUserSolutions = async (parent: Problem) => {
   const { id } = parent;
 
-  const solutions = await prisma.publishedSolution.findMany({
+  const solutions = await prisma.userSolution.findMany({
     where: { problemId: id },
   });
 
