@@ -176,11 +176,26 @@ export const deleteProblem = async (
   return { isSuccess: !!problem, message: "Problem deleted successfully" };
 };
 
-export const getProblem = async (parent: any, args: { id: string }) => {
-  const { id } = args;
+export const getProblem = async (
+  parent: any,
+  args: { id: string; slug: string }
+) => {
+  const { id, slug } = args;
+
+  if (!id && !slug) {
+    throw new GraphQLError("Either 'id' or 'slug' must be provided.", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  if (id && slug) {
+    throw new GraphQLError("Provide only one: either 'id' or 'slug'", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
 
   const problem = await prisma.problem.findUnique({
-    where: { id },
+    where: id ? { id } : { slug },
   });
 
   return problem;
@@ -192,7 +207,9 @@ export const getAllProblems = async (
     filters: GetAllProblemsFilterInput;
   }
 ) => {
-  const { skip = 0, take = 10, search = "", difficulty, topics } = args.filters;
+  const filters = args.filters || {};
+
+  const { skip = 0, take = 10, search = "", difficulty, topics } = filters;
 
   const whereClause = {
     ...(search ? { title: { contains: search } } : {}),

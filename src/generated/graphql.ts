@@ -86,6 +86,12 @@ export type GetAllProblemsFilterInput = {
   topics?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
+export type GetAllProblemsResponse = {
+  __typename?: 'GetAllProblemsResponse';
+  edges?: Maybe<Array<Maybe<Problem>>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
 export type Hint = {
   __typename?: 'Hint';
   content?: Maybe<Scalars['String']['output']>;
@@ -132,6 +138,15 @@ export type MutationUpdateProfileArgs = {
   input?: InputMaybe<UpdateProfileInput>;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  currentPage: Scalars['Int']['output'];
+  fetchedCount: Scalars['Int']['output'];
+  hasNextPage: Scalars['Boolean']['output'];
+  totalCount: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
 export type Problem = {
   __typename?: 'Problem';
   acceptedSubmissions?: Maybe<Scalars['Int']['output']>;
@@ -167,19 +182,20 @@ export enum ProblemDifficulty {
 export type Query = {
   __typename?: 'Query';
   problem?: Maybe<Problem>;
-  problems?: Maybe<Array<Maybe<Problem>>>;
+  problems?: Maybe<GetAllProblemsResponse>;
   user?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
 };
 
 
 export type QueryProblemArgs = {
-  id: Scalars['ID']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryProblemsArgs = {
-  filters: GetAllProblemsFilterInput;
+  filters?: InputMaybe<GetAllProblemsFilterInput>;
 };
 
 
@@ -342,11 +358,13 @@ export type ResolversTypes = {
   ExampleInput: ExampleInput;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
+  GetAllProblemsResponse: ResolverTypeWrapper<GetAllProblemsResponse>;
   Hint: ResolverTypeWrapper<Hint>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LikeDislikeInput: LikeDislikeInput;
   Mutation: ResolverTypeWrapper<{}>;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
   Problem: ResolverTypeWrapper<Problem>;
   ProblemDifficulty: ProblemDifficulty;
   Query: ResolverTypeWrapper<{}>;
@@ -372,11 +390,13 @@ export type ResolversParentTypes = {
   ExampleInput: ExampleInput;
   GenericResponse: GenericResponse;
   GetAllProblemsFilterInput: GetAllProblemsFilterInput;
+  GetAllProblemsResponse: GetAllProblemsResponse;
   Hint: Hint;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   LikeDislikeInput: LikeDislikeInput;
   Mutation: {};
+  PageInfo: PageInfo;
   Problem: Problem;
   Query: {};
   Session: Session;
@@ -434,6 +454,12 @@ export type GenericResponseResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GetAllProblemsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['GetAllProblemsResponse'] = ResolversParentTypes['GetAllProblemsResponse']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['Problem']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<Maybe<ResolversTypes['PageInfo']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type HintResolvers<ContextType = any, ParentType extends ResolversParentTypes['Hint'] = ResolversParentTypes['Hint']> = {
   content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -447,6 +473,15 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   likeDislikeProblem?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, Partial<MutationLikeDislikeProblemArgs>>;
   updateProblem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<MutationUpdateProblemArgs>>;
   updateProfile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateProfileArgs>>;
+};
+
+export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
+  currentPage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  fetchedCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalPages?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProblemResolvers<ContextType = any, ParentType extends ResolversParentTypes['Problem'] = ResolversParentTypes['Problem']> = {
@@ -476,8 +511,8 @@ export type ProblemResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, RequireFields<QueryProblemArgs, 'id'>>;
-  problems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Problem']>>>, ParentType, ContextType, RequireFields<QueryProblemsArgs, 'filters'>>;
+  problem?: Resolver<Maybe<ResolversTypes['Problem']>, ParentType, ContextType, Partial<QueryProblemArgs>>;
+  problems?: Resolver<Maybe<ResolversTypes['GetAllProblemsResponse']>, ParentType, ContextType, Partial<QueryProblemsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };
@@ -532,8 +567,10 @@ export type Resolvers<ContextType = any> = {
   Editorial?: EditorialResolvers<ContextType>;
   Example?: ExampleResolvers<ContextType>;
   GenericResponse?: GenericResponseResolvers<ContextType>;
+  GetAllProblemsResponse?: GetAllProblemsResponseResolvers<ContextType>;
   Hint?: HintResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   Problem?: ProblemResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
