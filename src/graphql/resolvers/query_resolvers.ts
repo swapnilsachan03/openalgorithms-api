@@ -15,6 +15,12 @@ import {
 } from "@/controllers/problem_controller";
 
 import {
+  getUserSolution,
+  getUserSolutionsLikes,
+  getUserSolutionsDislikes,
+} from "@/controllers/user_solution_controller";
+
+import {
   getAllUsers,
   getProfile,
   getUserSessions,
@@ -26,6 +32,7 @@ export const queryResolvers = {
     users: getAllUsers,
     problem: getProblem,
     problems: getAllProblems,
+    userSolution: getUserSolution,
   },
   User: {
     sessions: getUserSessions,
@@ -42,5 +49,9 @@ export const queryResolvers = {
     topics: getProblemTopics,
     editorial: getProblemEditorial,
     discussions: getProblemDiscussions,
+  },
+  UserSolution: {
+    likes: getUserSolutionsLikes,
+    dislikes: getUserSolutionsDislikes,
   },
 };
