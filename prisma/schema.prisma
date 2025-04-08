@@ -190,6 +190,7 @@ model UserSolution {
   id        String  @id @default(cuid())
   authorId  String?
   problemId String
+  title     String
   content   String
   views     Int     @default(0)
 

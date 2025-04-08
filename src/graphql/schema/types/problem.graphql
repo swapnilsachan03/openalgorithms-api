@@ -78,6 +78,7 @@ type UserSolution {
   id: ID!
   authorId: ID
   problemId: ID
+  title: String
   content: String
   views: Int
   user: User

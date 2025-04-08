@@ -194,8 +194,9 @@ export const getProblem = async (
     });
   }
 
-  const problem = await prisma.problem.findUnique({
+  const problem = await prisma.problem.update({
     where: id ? { id } : { slug },
+    data: { views: { increment: 1 } },
   });
 
   return problem;
