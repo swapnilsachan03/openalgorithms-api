@@ -153,10 +153,11 @@ model BookmarkedProblem {
 }
 
 model Example {
-  id        String @id @default(cuid())
-  input     String
-  output    String
-  problemId String
+  id         String  @id @default(cuid())
+  input      String
+  output     String
+  explanaion String?
+  problemId  String
 
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 }
@@ -204,6 +205,7 @@ model UserSolution {
 
 model Editorial {
   id        String @id @default(cuid())
+  title     String
   problemId String @unique
   content   String
   views     Int    @default(0)

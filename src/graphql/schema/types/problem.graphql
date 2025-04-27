@@ -51,6 +51,7 @@ type Example {
   id: ID!
   input: String
   output: String
+  explanation: String
   problemId: ID
 }
 

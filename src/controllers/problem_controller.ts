@@ -13,10 +13,9 @@ import {
 } from "@/generated/graphql";
 
 export const createProblem = async (
-  parent: any,
+  parent: unknown,
   args: { input: CreateProblemInput },
-  contextValue: AuthContext,
-  info: any
+  contextValue: AuthContext
 ) => {
   const { token } = contextValue;
 
@@ -38,7 +37,6 @@ export const createProblem = async (
     title,
     slug,
     description,
-    createdById,
     timeLimitInSeconds,
     memoryLimitInMB,
     difficulty,
@@ -46,11 +44,14 @@ export const createProblem = async (
     solutions,
     hints,
     topics,
+    editorial,
   } = args.input;
 
-  const hintsInput = hints.map(hint => ({
-    content: hint,
-  }));
+  const hintsInput = hints
+    ? hints.map(hint => ({
+        content: hint,
+      }))
+    : [];
 
   const topicsInput = topics.map(id => ({ id }));
 
@@ -59,20 +60,31 @@ export const createProblem = async (
       title,
       slug,
       description,
-      createdById,
+      createdById: sessionRes.user.id,
       timeLimitInSeconds,
       memoryLimitInMB,
       difficulty,
       examples: {
         create: examples,
       },
-      solutions: {
-        create: solutions,
-      },
+      ...(solutions
+        ? {
+            solutions: {
+              create: solutions,
+            },
+          }
+        : {}),
       hints: { createMany: { data: hintsInput } },
       topics: {
         connect: topicsInput,
       },
+      ...(editorial
+        ? {
+            editorial: {
+              create: editorial,
+            },
+          }
+        : {}),
     },
   });
 
@@ -80,10 +92,9 @@ export const createProblem = async (
 };
 
 export const updateProblem = async (
-  parent: any,
+  parent: unknown,
   args: { input: UpdateProblemInput },
-  contextValue: AuthContext,
-  info: any
+  contextValue: AuthContext
 ) => {
   const { token } = contextValue;
 
@@ -147,7 +158,7 @@ export const updateProblem = async (
 };
 
 export const deleteProblem = async (
-  parent: any,
+  parent: unknown,
   args: { id: string },
   contextValue: AuthContext
 ) => {
@@ -177,7 +188,7 @@ export const deleteProblem = async (
 };
 
 export const getProblem = async (
-  parent: any,
+  parent: unknown,
   args: { id: string; slug: string }
 ) => {
   const { id, slug } = args;
@@ -203,7 +214,7 @@ export const getProblem = async (
 };
 
 export const getAllProblems = async (
-  parent: any,
+  parent: unknown,
   args: {
     filters: GetAllProblemsFilterInput;
   }
