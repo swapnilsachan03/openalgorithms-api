@@ -1,4 +1,3 @@
-import _ from "lodash";
 import express from "express";
 import http from "http";
 import bodyParser from "body-parser";
@@ -58,7 +57,7 @@ app.use(
   express.json(),
   expressMiddleware(apolloServer, {
     context: async ({ req }) => {
-      return { token: req.headers.authorization };
+      return { token: req.headers.authorization?.split(" ")[1] };
     },
   })
 );

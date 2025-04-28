@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import { sha256 } from "@oslojs/crypto/sha2";
 
 import { prisma } from "@lib/prisma";
-import { createSession, generateSessionToken } from "@utils/auth_utils";
+
+import {
+  createSession,
+  generateSessionToken,
+  validateSessionToken,
+} from "@utils/auth_utils";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password, image } = req.body;
@@ -69,22 +74,29 @@ export const loginUser = async (req: Request, res: Response) => {
   const token = generateSessionToken();
   await createSession(token, user.id);
 
-  res.json({ token });
+  res.json({ token, user, message: "Logged in successfully" });
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
-  const sessionToken = req.headers.authorization?.split(" ")[1];
+  const bearerToken = req.headers.authorization?.split(" ")[1];
 
-  if (!sessionToken) {
+  if (!bearerToken) {
     res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const { session } = await validateSessionToken(bearerToken);
+
+  if (session === null) {
+    res.status(200).json({ message: "Logged out" });
     return;
   }
 
   await prisma.session.delete({
     where: {
-      sessionToken,
+      sessionToken: session.sessionToken,
     },
   });
 
-  res.json({ message: "Logged out" });
+  res.status(200).json({ message: "Logged out" });
 };
