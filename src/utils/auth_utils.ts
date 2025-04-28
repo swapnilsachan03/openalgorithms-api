@@ -62,7 +62,10 @@ export async function validateSessionToken(
   const { user, ...session } = result;
 
   if (Date.now() >= session.expires.getTime()) {
-    await prisma.session.delete({ where: { sessionToken } });
+    await prisma.session.delete({
+      where: { sessionToken: session.sessionToken },
+    });
+
     return { session: null, user: null };
   }
 
