@@ -69,7 +69,7 @@ export const loginUser = async (req: Request, res: Response) => {
   const token = generateSessionToken();
   await createSession(token, user.id);
 
-  res.json({ token });
+  res.json({ token, user, message: "Logged in successfully" });
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
