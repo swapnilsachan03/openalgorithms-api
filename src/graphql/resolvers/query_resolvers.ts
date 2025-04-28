@@ -23,12 +23,14 @@ import {
 import {
   getAllUsers,
   getProfile,
+  getUser,
   getUserSessions,
 } from "@/controllers/user_controller";
 
 export const queryResolvers = {
   Query: {
-    user: getProfile,
+    user: getUser,
+    profile: getProfile,
     users: getAllUsers,
     problem: getProblem,
     problems: getAllProblems,

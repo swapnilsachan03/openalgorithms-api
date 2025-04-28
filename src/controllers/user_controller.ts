@@ -13,7 +13,7 @@ export const getAllUsers = async () => {
   return await prisma.user.findMany();
 };
 
-export const getProfile = async (parent: any, args: { id: string }) => {
+export const getUser = async (parent: unknown, args: { id: string }) => {
   const { id } = args;
 
   const user = await prisma.user.findUnique({
@@ -31,7 +31,25 @@ export const getProfile = async (parent: any, args: { id: string }) => {
   return user;
 };
 
-export const getUserSessions = async (parent: User, args: { id: string }) => {
+export const getProfile = async (
+  parent: unknown,
+  args: unknown,
+  contextValue: AuthContext
+) => {
+  const { token = "token" } = contextValue;
+
+  const sessionRes = await validateSessionToken(token);
+
+  if (!sessionRes?.user) {
+    throw new GraphQLError("Failed to fetch profile, invalid token!", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
+  }
+
+  return sessionRes.user;
+};
+
+export const getUserSessions = async (parent: User) => {
   const { id } = parent;
 
   const sessions = await prisma.session.findMany({
@@ -44,7 +62,7 @@ export const getUserSessions = async (parent: User, args: { id: string }) => {
 };
 
 export const updateProfile = async (
-  parent: any,
+  parent: unknown,
   args: {
     input: {
       id: string;
@@ -81,9 +99,9 @@ export const updateProfile = async (
 };
 
 export const deleteProfile = async (
-  parent: any,
+  parent: unknown,
   args: { userId: string },
-  contextValue: any,
+  contextValue: unknown,
   info: AuthContext
 ) => {
   const { userId } = args;
@@ -128,7 +146,7 @@ export const deleteProfile = async (
 };
 
 export const likeDislikeProblem = async (
-  parent: any,
+  parent: unknown,
   args: { input: LikeDislikeInput },
   contextValue: AuthContext
 ) => {
