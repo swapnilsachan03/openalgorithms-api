@@ -92,6 +92,7 @@ type UserSolution {
 
 type Editorial {
   id: ID!
+  title: String
   content: String
   problemId: ID
   views: Int
