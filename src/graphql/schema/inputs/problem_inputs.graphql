@@ -44,6 +44,11 @@ input EditorialInput {
   content: String!
 }
 
+input CreateTopicInput {
+  name: String!
+  description: String!
+}
+
 input GetAllProblemsFilterInput {
   difficulty: ProblemDifficulty
   topics: [ID!]

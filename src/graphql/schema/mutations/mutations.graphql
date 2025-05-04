@@ -1,6 +1,7 @@
 # Importing types
 
 # import Problem from "../types/problem.graphql"
+# import Topic from "../types/problem.graphql"
 # import User from "../types/user.graphql"
 # import GenericResponse from "../types/common.graphql"
 
@@ -9,6 +10,7 @@
 # import UpdateProfileInput from "../inputs/user_inputs.graphql"
 # import CreateProblemInput from "../inputs/problem_inputs.graphql"
 # import UpdateProblemInput from "../inputs/problem_inputs.graphql"
+# import CreateTopicInput from "../inputs/problem_inputs.graphql"
 # import LikeDislikeInput from "../inputs/common.graphql"
 
 type Mutation {
@@ -17,6 +19,7 @@ type Mutation {
   updateProblem(input: UpdateProblemInput): Problem
   deleteProblem(id: ID!): GenericResponse
   likeDislikeProblem(input: LikeDislikeInput): GenericResponse
+  createTopic(input: CreateTopicInput): Topic
 
   # To-Dos
 

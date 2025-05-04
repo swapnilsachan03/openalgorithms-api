@@ -24,7 +24,7 @@ type Problem {
   solutions: [Solution]
   userSolutions: [UserSolution]
   hints: [Hint]
-  topics: [String]
+  topics: [Topic]
   editorial: Editorial
   discussions: [Discussion]
 }
