@@ -2,15 +2,15 @@ import _ from "lodash";
 import { Problem } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { prisma } from "@/lib/prisma";
-import { validateSessionToken } from "@/utils/auth_utils";
-import { AuthContext } from "@/index";
+import { prisma } from "@lib/prisma";
+import { validateSessionToken } from "@utils/auth_utils";
+import { AuthContext } from "@/src/index";
 
 import {
   CreateProblemInput,
   GetAllProblemsFilterInput,
   UpdateProblemInput,
-} from "@/generated/graphql";
+} from "@generated/graphql";
 
 export const createProblem = async (
   parent: unknown,

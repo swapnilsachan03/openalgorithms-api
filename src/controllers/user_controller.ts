@@ -4,10 +4,10 @@ import { GraphQLError } from "graphql";
 import { prisma } from "@lib/prisma";
 import { User } from "@prisma/client";
 
-import { validateSessionToken } from "@/utils/auth_utils";
-import { AuthContext } from "@/index";
+import { validateSessionToken } from "@utils/auth_utils";
+import { AuthContext } from "@/src/index";
 
-import { LikeDislikeInput } from "@/generated/graphql";
+import { LikeDislikeInput } from "@generated/graphql";
 
 export const getAllUsers = async () => {
   return await prisma.user.findMany();

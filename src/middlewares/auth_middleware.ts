@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { validateSessionToken } from "@/utils/auth_utils";
+import { validateSessionToken } from "@utils/auth_utils";
 
 export const authMiddleware = async (
   req: Request,

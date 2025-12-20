@@ -12,20 +12,20 @@ import {
   getProblemUserSolutions,
   getProblemSolutions,
   getProblemTopics,
-} from "@/controllers/problem_controller";
+} from "@controllers/problem_controller";
 
 import {
   getUserSolution,
   getUserSolutionsLikes,
   getUserSolutionsDislikes,
-} from "@/controllers/user_solution_controller";
+} from "@controllers/user_solution_controller";
 
 import {
   getAllUsers,
   getProfile,
   getUser,
   getUserSessions,
-} from "@/controllers/user_controller";
+} from "@controllers/user_controller";
 
 export const queryResolvers = {
   Query: {
