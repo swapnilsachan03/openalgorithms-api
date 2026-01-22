@@ -46,6 +46,7 @@ export type CreateProblemInput = {
   memoryLimitInMB: Scalars["Int"]["input"];
   slug: Scalars["String"]["input"];
   solutions?: InputMaybe<Array<SolutionInput>>;
+  testcases: Array<TestcaseInput>;
   timeLimitInSeconds: Scalars["Int"]["input"];
   title: Scalars["String"]["input"];
   topics: Array<Scalars["ID"]["input"]>;
@@ -74,6 +75,7 @@ export type Editorial = {
   likes?: Maybe<Scalars["Int"]["output"]>;
   problem?: Maybe<Problem>;
   problemId?: Maybe<Scalars["ID"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
   updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   views?: Maybe<Scalars["Int"]["output"]>;
 };
@@ -186,6 +188,7 @@ export type Problem = {
   memoryLimitInMB?: Maybe<Scalars["Int"]["output"]>;
   slug?: Maybe<Scalars["String"]["output"]>;
   solutions?: Maybe<Array<Maybe<Solution>>>;
+  testcases?: Maybe<Array<Maybe<Testcase>>>;
   timeLimitInSeconds?: Maybe<Scalars["Int"]["output"]>;
   title?: Maybe<Scalars["String"]["output"]>;
   topics?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
@@ -204,6 +207,7 @@ export type Query = {
   __typename?: "Query";
   problem?: Maybe<Problem>;
   problems?: Maybe<GetAllProblemsResponse>;
+  profile?: Maybe<User>;
   user?: Maybe<User>;
   userSolution?: Maybe<UserSolution>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -253,6 +257,18 @@ export type Solution = {
 export type SolutionInput = {
   code: Scalars["String"]["input"];
   language: Scalars["String"]["input"];
+};
+
+export type Testcase = {
+  __typename?: "Testcase";
+  id: Scalars["ID"]["output"];
+  input?: Maybe<Scalars["String"]["output"]>;
+  output?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type TestcaseInput = {
+  input: Scalars["String"]["input"];
+  output: Scalars["String"]["input"];
 };
 
 export type UpdateProblemInput = {
@@ -307,7 +323,12 @@ export type ResolverTypeWrapper<T> = Promise<T> | T;
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
+export type Resolver<
+  TResult,
+  TParent = Record<PropertyKey, never>,
+  TContext = Record<PropertyKey, never>,
+  TArgs = Record<PropertyKey, never>,
+> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
 
@@ -371,22 +392,29 @@ export type SubscriptionObject<
 export type SubscriptionResolver<
   TResult,
   TKey extends string,
-  TParent = {},
-  TContext = {},
-  TArgs = {},
+  TParent = Record<PropertyKey, never>,
+  TContext = Record<PropertyKey, never>,
+  TArgs = Record<PropertyKey, never>,
 > =
   | ((
       ...args: any[]
     ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
-export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
+export type TypeResolveFn<
+  TTypes,
+  TParent = Record<PropertyKey, never>,
+  TContext = Record<PropertyKey, never>,
+> = (
   parent: TParent,
   context: TContext,
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
+export type IsTypeOfResolverFn<
+  T = Record<PropertyKey, never>,
+  TContext = Record<PropertyKey, never>,
+> = (
   obj: T,
   context: TContext,
   info: GraphQLResolveInfo
@@ -395,10 +423,10 @@ export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
 export type NextResolverFn<T> = () => Promise<T>;
 
 export type DirectiveResolverFn<
-  TResult = {},
-  TParent = {},
-  TContext = {},
-  TArgs = {},
+  TResult = Record<PropertyKey, never>,
+  TParent = Record<PropertyKey, never>,
+  TContext = Record<PropertyKey, never>,
+  TArgs = Record<PropertyKey, never>,
 > = (
   next: NextResolverFn<TResult>,
   parent: TParent,
@@ -424,16 +452,18 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
   Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
   LikeDislikeInput: LikeDislikeInput;
-  Mutation: ResolverTypeWrapper<{}>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Problem: ResolverTypeWrapper<Problem>;
   ProblemDifficulty: ProblemDifficulty;
-  Query: ResolverTypeWrapper<{}>;
+  Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Role: Role;
   Session: ResolverTypeWrapper<Session>;
   Solution: ResolverTypeWrapper<Solution>;
   SolutionInput: SolutionInput;
   String: ResolverTypeWrapper<Scalars["String"]["output"]>;
+  Testcase: ResolverTypeWrapper<Testcase>;
+  TestcaseInput: TestcaseInput;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   User: ResolverTypeWrapper<User>;
@@ -457,29 +487,33 @@ export type ResolversParentTypes = {
   ID: Scalars["ID"]["output"];
   Int: Scalars["Int"]["output"];
   LikeDislikeInput: LikeDislikeInput;
-  Mutation: {};
+  Mutation: Record<PropertyKey, never>;
   PageInfo: PageInfo;
   Problem: Problem;
-  Query: {};
+  Query: Record<PropertyKey, never>;
   Session: Session;
   Solution: Solution;
   SolutionInput: SolutionInput;
   String: Scalars["String"]["output"];
+  Testcase: Testcase;
+  TestcaseInput: TestcaseInput;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   User: User;
   UserSolution: UserSolution;
 };
 
-export interface DateTimeScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<
+  ResolversTypes["DateTime"],
+  any
+> {
   name: "DateTime";
 }
 
 export type DiscussionResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Discussion"] = ResolversParentTypes["Discussion"],
+  ParentType extends ResolversParentTypes["Discussion"] =
+    ResolversParentTypes["Discussion"],
 > = {
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   createdAt?: Resolver<
@@ -507,13 +541,12 @@ export type DiscussionResolvers<
   >;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type EditorialResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Editorial"] = ResolversParentTypes["Editorial"],
+  ParentType extends ResolversParentTypes["Editorial"] =
+    ResolversParentTypes["Editorial"],
 > = {
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   createdAt?: Resolver<
@@ -526,19 +559,19 @@ export type EditorialResolvers<
   likes?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
   problem?: Resolver<Maybe<ResolversTypes["Problem"]>, ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   updatedAt?: Resolver<
     Maybe<ResolversTypes["DateTime"]>,
     ParentType,
     ContextType
   >;
   views?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ExampleResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Example"] = ResolversParentTypes["Example"],
+  ParentType extends ResolversParentTypes["Example"] =
+    ResolversParentTypes["Example"],
 > = {
   explanation?: Resolver<
     Maybe<ResolversTypes["String"]>,
@@ -549,23 +582,21 @@ export type ExampleResolvers<
   input?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   output?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GenericResponseResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["GenericResponse"] = ResolversParentTypes["GenericResponse"],
+  ParentType extends ResolversParentTypes["GenericResponse"] =
+    ResolversParentTypes["GenericResponse"],
 > = {
   isSuccess?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GetAllProblemsResponseResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["GetAllProblemsResponse"] = ResolversParentTypes["GetAllProblemsResponse"],
+  ParentType extends ResolversParentTypes["GetAllProblemsResponse"] =
+    ResolversParentTypes["GetAllProblemsResponse"],
 > = {
   edges?: Resolver<
     Maybe<Array<Maybe<ResolversTypes["Problem"]>>>,
@@ -577,24 +608,22 @@ export type GetAllProblemsResponseResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type HintResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Hint"] = ResolversParentTypes["Hint"],
+  ParentType extends ResolversParentTypes["Hint"] =
+    ResolversParentTypes["Hint"],
 > = {
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"],
+  ParentType extends ResolversParentTypes["Mutation"] =
+    ResolversParentTypes["Mutation"],
 > = {
   createProblem?: Resolver<
     Maybe<ResolversTypes["Problem"]>,
@@ -630,21 +659,20 @@ export type MutationResolvers<
 
 export type PageInfoResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["PageInfo"] = ResolversParentTypes["PageInfo"],
+  ParentType extends ResolversParentTypes["PageInfo"] =
+    ResolversParentTypes["PageInfo"],
 > = {
   currentPage?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   fetchedCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   hasNextPage?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   totalPages?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProblemResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Problem"] = ResolversParentTypes["Problem"],
+  ParentType extends ResolversParentTypes["Problem"] =
+    ResolversParentTypes["Problem"],
 > = {
   acceptedSubmissions?: Resolver<
     Maybe<ResolversTypes["Int"]>,
@@ -698,6 +726,11 @@ export type ProblemResolvers<
     ParentType,
     ContextType
   >;
+  testcases?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Testcase"]>>>,
+    ParentType,
+    ContextType
+  >;
   timeLimitInSeconds?: Resolver<
     Maybe<ResolversTypes["Int"]>,
     ParentType,
@@ -720,13 +753,12 @@ export type ProblemResolvers<
     ContextType
   >;
   views?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
+  ParentType extends ResolversParentTypes["Query"] =
+    ResolversParentTypes["Query"],
 > = {
   problem?: Resolver<
     Maybe<ResolversTypes["Problem"]>,
@@ -740,6 +772,7 @@ export type QueryResolvers<
     ContextType,
     Partial<QueryProblemsArgs>
   >;
+  profile?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   user?: Resolver<
     Maybe<ResolversTypes["User"]>,
     ParentType,
@@ -761,8 +794,8 @@ export type QueryResolvers<
 
 export type SessionResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Session"] = ResolversParentTypes["Session"],
+  ParentType extends ResolversParentTypes["Session"] =
+    ResolversParentTypes["Session"],
 > = {
   createdAt?: Resolver<
     Maybe<ResolversTypes["String"]>,
@@ -777,13 +810,12 @@ export type SessionResolvers<
     ContextType
   >;
   userId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type SolutionResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["Solution"] = ResolversParentTypes["Solution"],
+  ParentType extends ResolversParentTypes["Solution"] =
+    ResolversParentTypes["Solution"],
 > = {
   code?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   createdAt?: Resolver<
@@ -794,13 +826,22 @@ export type SolutionResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   language?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   problemId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TestcaseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Testcase"] =
+    ResolversParentTypes["Testcase"],
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  input?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  output?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 };
 
 export type UserResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["User"] = ResolversParentTypes["User"],
+  ParentType extends ResolversParentTypes["User"] =
+    ResolversParentTypes["User"],
 > = {
   email?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   emailVerified?: Resolver<
@@ -817,13 +858,12 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserSolutionResolvers<
   ContextType = any,
-  ParentType extends
-    ResolversParentTypes["UserSolution"] = ResolversParentTypes["UserSolution"],
+  ParentType extends ResolversParentTypes["UserSolution"] =
+    ResolversParentTypes["UserSolution"],
 > = {
   authorId?: Resolver<Maybe<ResolversTypes["ID"]>, ParentType, ContextType>;
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
@@ -845,7 +885,6 @@ export type UserSolutionResolvers<
   >;
   user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
   views?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
@@ -862,6 +901,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   Solution?: SolutionResolvers<ContextType>;
+  Testcase?: TestcaseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserSolution?: UserSolutionResolvers<ContextType>;
 };
