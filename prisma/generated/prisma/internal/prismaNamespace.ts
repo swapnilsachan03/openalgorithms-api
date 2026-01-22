@@ -416,6 +416,7 @@ export const ModelName = {
   Account: "Account",
   Session: "Session",
   Problem: "Problem",
+  Testcase: "Testcase",
   Hint: "Hint",
   Topic: "Topic",
   ProblemInteraction: "ProblemInteraction",
@@ -456,6 +457,7 @@ export type TypeMap<
       | "account"
       | "session"
       | "problem"
+      | "testcase"
       | "hint"
       | "topic"
       | "problemInteraction"
@@ -773,6 +775,82 @@ export type TypeMap<
           args: Prisma.ProblemCountArgs<ExtArgs>;
           result:
             | runtime.Types.Utils.Optional<Prisma.ProblemCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    Testcase: {
+      payload: Prisma.$TestcasePayload<ExtArgs>;
+      fields: Prisma.TestcaseFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.TestcaseFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.TestcaseFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        findFirst: {
+          args: Prisma.TestcaseFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.TestcaseFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        findMany: {
+          args: Prisma.TestcaseFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>[];
+        };
+        create: {
+          args: Prisma.TestcaseCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        createMany: {
+          args: Prisma.TestcaseCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.TestcaseCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>[];
+        };
+        delete: {
+          args: Prisma.TestcaseDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        update: {
+          args: Prisma.TestcaseUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        deleteMany: {
+          args: Prisma.TestcaseDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.TestcaseUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.TestcaseUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>[];
+        };
+        upsert: {
+          args: Prisma.TestcaseUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestcasePayload>;
+        };
+        aggregate: {
+          args: Prisma.TestcaseAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTestcase>;
+        };
+        groupBy: {
+          args: Prisma.TestcaseGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.TestcaseGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.TestcaseCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.TestcaseCountAggregateOutputType>
             | number;
         };
       };
@@ -1944,6 +2022,16 @@ export const ProblemScalarFieldEnum = {
 export type ProblemScalarFieldEnum =
   (typeof ProblemScalarFieldEnum)[keyof typeof ProblemScalarFieldEnum];
 
+export const TestcaseScalarFieldEnum = {
+  id: "id",
+  input: "input",
+  output: "output",
+  problemId: "problemId",
+} as const;
+
+export type TestcaseScalarFieldEnum =
+  (typeof TestcaseScalarFieldEnum)[keyof typeof TestcaseScalarFieldEnum];
+
 export const HintScalarFieldEnum = {
   id: "id",
   content: "content",
@@ -2349,6 +2437,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit;
   session?: Prisma.SessionOmit;
   problem?: Prisma.ProblemOmit;
+  testcase?: Prisma.TestcaseOmit;
   hint?: Prisma.HintOmit;
   topic?: Prisma.TopicOmit;
   problemInteraction?: Prisma.ProblemInteractionOmit;

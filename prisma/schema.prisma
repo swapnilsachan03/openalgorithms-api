@@ -95,6 +95,7 @@ model Problem {
   discussions        Discussion[]
   problemInteraction ProblemInteraction[]
   bookmarkedProblems BookmarkedProblem[]
+  testcases          Testcase[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,6 +105,15 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+}
+
+model Testcase {
+  id     String @id @default(cuid())
+  input  String
+  output String
+
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId String
 }
 
 model Hint {
