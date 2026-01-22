@@ -45,6 +45,7 @@ export const createProblem = async (
     hints,
     topics,
     editorial,
+    testcases,
   } = args.input;
 
   const hintsInput = hints
@@ -75,6 +76,7 @@ export const createProblem = async (
           }
         : {}),
       hints: { createMany: { data: hintsInput } },
+      testcases: { createMany: { data: testcases } },
       topics: {
         connect: topicsInput,
       },
@@ -195,12 +197,6 @@ export const getProblem = async (
 
   if (!id && !slug) {
     throw new GraphQLError("Either 'id' or 'slug' must be provided.", {
-      extensions: { code: "BAD_USER_INPUT" },
-    });
-  }
-
-  if (id && slug) {
-    throw new GraphQLError("Provide only one: either 'id' or 'slug'", {
       extensions: { code: "BAD_USER_INPUT" },
     });
   }
@@ -366,4 +362,14 @@ export const getProblemDiscussions = async (parent: Problem) => {
   });
 
   return discussions;
+};
+
+export const getProblemTestcases = async (parent: Problem) => {
+  const { id } = parent;
+
+  const testcases = await prisma.testcase.findMany({
+    where: { problemId: id },
+  });
+
+  return testcases;
 };

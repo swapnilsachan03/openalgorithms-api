@@ -12,6 +12,7 @@ input CreateProblemInput {
   hints: [String!]
   topics: [ID!]!
   editorial: EditorialInput
+  testcases: [TestcaseInput!]!
 }
 
 input UpdateProblemInput {
@@ -50,4 +51,9 @@ input GetAllProblemsFilterInput {
   search: String
   skip: Int!
   take: Int!
+}
+
+input TestcaseInput {
+  input: String!
+  output: String!
 }
