@@ -12,20 +12,22 @@ input CreateProblemInput {
   hints: [String!]
   topics: [ID!]!
   editorial: EditorialInput
+  testcases: [TestcaseInput!]!
 }
 
 input UpdateProblemInput {
   id: ID!
-  title: String!
-  slug: String!
-  description: String!
-  timeLimitInSeconds: Int!
-  memoryLimitInMB: Int!
-  difficulty: ProblemDifficulty!
-  examples: [ExampleInput!]!
-  solutions: [SolutionInput!]!
-  hints: [String!]!
-  topics: [String!]!
+  title: String
+  slug: String
+  description: String
+  timeLimitInSeconds: Int
+  memoryLimitInMB: Int
+  difficulty: ProblemDifficulty
+  examples: [ExampleInput!]
+  solutions: [SolutionInput!]
+  hints: [String!]
+  topics: [String!]
+  testcases: UpdateTestcasesInput
 }
 
 input ExampleInput {
@@ -50,4 +52,21 @@ input GetAllProblemsFilterInput {
   search: String
   skip: Int!
   take: Int!
+}
+
+input TestcaseInput {
+  input: String!
+  output: String!
+}
+
+input UpdatedTestcase {
+  id: ID!
+  input: String!
+  output: String!
+}
+
+input UpdateTestcasesInput {
+  addedTestcases: [TestcaseInput!]
+  updatedTestcases: [UpdatedTestcase!]
+  deletedTestcases: [ID!]
 }

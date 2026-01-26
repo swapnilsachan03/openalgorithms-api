@@ -12,6 +12,7 @@ import {
   getProblemUserSolutions,
   getProblemSolutions,
   getProblemTopics,
+  getProblemTestcases,
 } from "@controllers/problem_controller";
 
 import {
@@ -51,6 +52,7 @@ export const queryResolvers = {
     topics: getProblemTopics,
     editorial: getProblemEditorial,
     discussions: getProblemDiscussions,
+    testcases: getProblemTestcases,
   },
   UserSolution: {
     likes: getUserSolutionsLikes,

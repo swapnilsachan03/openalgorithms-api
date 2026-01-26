@@ -27,6 +27,7 @@ type Problem {
   topics: [String]
   editorial: Editorial
   discussions: [Discussion]
+  testcases: [Testcase]
 }
 
 type GetAllProblemsResponse {
@@ -114,6 +115,12 @@ type Discussion {
   replies: [Discussion]
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+type Testcase {
+  id: ID!
+  input: String
+  output: String
 }
 
 scalar DateTime

@@ -45,6 +45,7 @@ export const createProblem = async (
     hints,
     topics,
     editorial,
+    testcases,
   } = args.input;
 
   const hintsInput = hints
@@ -75,6 +76,7 @@ export const createProblem = async (
           }
         : {}),
       hints: { createMany: { data: hintsInput } },
+      testcases: { createMany: { data: testcases } },
       topics: {
         connect: topicsInput,
       },
@@ -124,32 +126,58 @@ export const updateProblem = async (
     solutions,
     hints,
     topics,
+    testcases,
   } = args.input;
 
-  const hintsInput = hints.map(hint => ({
+  const hintsInput = _.map(hints, hint => ({
     content: hint,
   }));
 
-  const topicsInput = topics.map(id => ({ id }));
+  const topicsInput = _.map(topics, id => ({ id }));
+
+  const addedTestcases = testcases?.addedTestcases ?? [];
+  const updatedTestcases = testcases?.updatedTestcases ?? [];
+  const deletedTestcases = testcases?.deletedTestcases ?? [];
 
   const problem = await prisma.problem.update({
     where: { id },
     data: {
-      title,
-      slug,
-      description,
-      timeLimitInSeconds,
-      memoryLimitInMB,
-      difficulty,
-      examples: {
-        create: examples,
-      },
-      solutions: {
-        create: solutions,
-      },
+      ...(title ? { title } : {}),
+      ...(slug ? { slug } : {}),
+      ...(description ? { description } : {}),
+      ...(timeLimitInSeconds ? { timeLimitInSeconds } : {}),
+      ...(memoryLimitInMB ? { memoryLimitInMB } : {}),
+      ...(difficulty ? { difficulty } : {}),
+      ...(examples
+        ? {
+            examples: {
+              create: examples,
+            },
+          }
+        : {}),
+      ...(solutions
+        ? {
+            solutions: {
+              create: solutions,
+            },
+          }
+        : {}),
       hints: { createMany: { data: hintsInput } },
       topics: {
         connect: topicsInput,
+      },
+      testcases: {
+        createMany: { data: addedTestcases },
+        deleteMany: {
+          id: { in: deletedTestcases },
+        },
+        update: _.map(updatedTestcases, tc => ({
+          where: { id: tc.id },
+          data: {
+            input: tc.input,
+            output: tc.output,
+          },
+        })),
       },
     },
   });
@@ -195,12 +223,6 @@ export const getProblem = async (
 
   if (!id && !slug) {
     throw new GraphQLError("Either 'id' or 'slug' must be provided.", {
-      extensions: { code: "BAD_USER_INPUT" },
-    });
-  }
-
-  if (id && slug) {
-    throw new GraphQLError("Provide only one: either 'id' or 'slug'", {
       extensions: { code: "BAD_USER_INPUT" },
     });
   }
@@ -366,4 +388,14 @@ export const getProblemDiscussions = async (parent: Problem) => {
   });
 
   return discussions;
+};
+
+export const getProblemTestcases = async (parent: Problem) => {
+  const { id } = parent;
+
+  const testcases = await prisma.testcase.findMany({
+    where: { problemId: id },
+  });
+
+  return testcases;
 };

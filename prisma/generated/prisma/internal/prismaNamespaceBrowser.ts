@@ -58,6 +58,7 @@ export const ModelName = {
   Account: "Account",
   Session: "Session",
   Problem: "Problem",
+  Testcase: "Testcase",
   Hint: "Hint",
   Topic: "Topic",
   ProblemInteraction: "ProblemInteraction",
@@ -80,12 +81,12 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName];
  * Enums
  */
 
-export const TransactionIsolationLevel = {
+export const TransactionIsolationLevel = runtime.makeStrictEnum({
   ReadUncommitted: "ReadUncommitted",
   ReadCommitted: "ReadCommitted",
   RepeatableRead: "RepeatableRead",
   Serializable: "Serializable",
-} as const;
+} as const);
 
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
@@ -153,6 +154,16 @@ export const ProblemScalarFieldEnum = {
 
 export type ProblemScalarFieldEnum =
   (typeof ProblemScalarFieldEnum)[keyof typeof ProblemScalarFieldEnum];
+
+export const TestcaseScalarFieldEnum = {
+  id: "id",
+  input: "input",
+  output: "output",
+  problemId: "problemId",
+} as const;
+
+export type TestcaseScalarFieldEnum =
+  (typeof TestcaseScalarFieldEnum)[keyof typeof TestcaseScalarFieldEnum];
 
 export const HintScalarFieldEnum = {
   id: "id",
