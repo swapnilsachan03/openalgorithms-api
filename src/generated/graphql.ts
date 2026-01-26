@@ -272,23 +272,36 @@ export type TestcaseInput = {
 };
 
 export type UpdateProblemInput = {
-  description: Scalars["String"]["input"];
-  difficulty: ProblemDifficulty;
-  examples: Array<ExampleInput>;
-  hints: Array<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  difficulty?: InputMaybe<ProblemDifficulty>;
+  examples?: InputMaybe<Array<ExampleInput>>;
+  hints?: InputMaybe<Array<Scalars["String"]["input"]>>;
   id: Scalars["ID"]["input"];
-  memoryLimitInMB: Scalars["Int"]["input"];
-  slug: Scalars["String"]["input"];
-  solutions: Array<SolutionInput>;
-  timeLimitInSeconds: Scalars["Int"]["input"];
-  title: Scalars["String"]["input"];
-  topics: Array<Scalars["String"]["input"]>;
+  memoryLimitInMB?: InputMaybe<Scalars["Int"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  solutions?: InputMaybe<Array<SolutionInput>>;
+  testcases?: InputMaybe<UpdateTestcasesInput>;
+  timeLimitInSeconds?: InputMaybe<Scalars["Int"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  topics?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
 export type UpdateProfileInput = {
   email?: InputMaybe<Scalars["String"]["input"]>;
   id: Scalars["ID"]["input"];
   image?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type UpdateTestcasesInput = {
+  addedTestcases?: InputMaybe<Array<TestcaseInput>>;
+  deletedTestcases?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  updatedTestcases?: InputMaybe<Array<UpdatedTestcase>>;
+};
+
+export type UpdatedTestcase = {
+  id: Scalars["ID"]["input"];
+  input: Scalars["String"]["input"];
+  output: Scalars["String"]["input"];
 };
 
 export type User = {
@@ -466,6 +479,8 @@ export type ResolversTypes = {
   TestcaseInput: TestcaseInput;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
+  UpdateTestcasesInput: UpdateTestcasesInput;
+  UpdatedTestcase: UpdatedTestcase;
   User: ResolverTypeWrapper<User>;
   UserSolution: ResolverTypeWrapper<UserSolution>;
 };
@@ -499,6 +514,8 @@ export type ResolversParentTypes = {
   TestcaseInput: TestcaseInput;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
+  UpdateTestcasesInput: UpdateTestcasesInput;
+  UpdatedTestcase: UpdatedTestcase;
   User: User;
   UserSolution: UserSolution;
 };

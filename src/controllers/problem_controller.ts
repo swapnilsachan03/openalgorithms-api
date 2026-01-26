@@ -126,32 +126,58 @@ export const updateProblem = async (
     solutions,
     hints,
     topics,
+    testcases,
   } = args.input;
 
-  const hintsInput = hints.map(hint => ({
+  const hintsInput = _.map(hints, hint => ({
     content: hint,
   }));
 
-  const topicsInput = topics.map(id => ({ id }));
+  const topicsInput = _.map(topics, id => ({ id }));
+
+  const addedTestcases = testcases?.addedTestcases ?? [];
+  const updatedTestcases = testcases?.updatedTestcases ?? [];
+  const deletedTestcases = testcases?.deletedTestcases ?? [];
 
   const problem = await prisma.problem.update({
     where: { id },
     data: {
-      title,
-      slug,
-      description,
-      timeLimitInSeconds,
-      memoryLimitInMB,
-      difficulty,
-      examples: {
-        create: examples,
-      },
-      solutions: {
-        create: solutions,
-      },
+      ...(title ? { title } : {}),
+      ...(slug ? { slug } : {}),
+      ...(description ? { description } : {}),
+      ...(timeLimitInSeconds ? { timeLimitInSeconds } : {}),
+      ...(memoryLimitInMB ? { memoryLimitInMB } : {}),
+      ...(difficulty ? { difficulty } : {}),
+      ...(examples
+        ? {
+            examples: {
+              create: examples,
+            },
+          }
+        : {}),
+      ...(solutions
+        ? {
+            solutions: {
+              create: solutions,
+            },
+          }
+        : {}),
       hints: { createMany: { data: hintsInput } },
       topics: {
         connect: topicsInput,
+      },
+      testcases: {
+        createMany: { data: addedTestcases },
+        deleteMany: {
+          id: { in: deletedTestcases },
+        },
+        update: _.map(updatedTestcases, tc => ({
+          where: { id: tc.id },
+          data: {
+            input: tc.input,
+            output: tc.output,
+          },
+        })),
       },
     },
   });
