@@ -146,6 +146,7 @@ export type Mutation = {
   likeDislikeProblem?: Maybe<GenericResponse>;
   updateProblem?: Maybe<Problem>;
   updateProfile?: Maybe<User>;
+  updateTopic?: Maybe<Topic>;
 };
 
 export type MutationCreateProblemArgs = {
@@ -170,6 +171,10 @@ export type MutationUpdateProblemArgs = {
 
 export type MutationUpdateProfileArgs = {
   input?: InputMaybe<UpdateProfileInput>;
+};
+
+export type MutationUpdateTopicArgs = {
+  input: UpdateTopicInput;
 };
 
 export type PageInfo = {
@@ -317,6 +322,13 @@ export type UpdateTestcasesInput = {
   addedTestcases?: InputMaybe<Array<TestcaseInput>>;
   deletedTestcases?: InputMaybe<Array<Scalars["ID"]["input"]>>;
   updatedTestcases?: InputMaybe<Array<UpdatedTestcase>>;
+};
+
+export type UpdateTopicInput = {
+  description: Scalars["String"]["input"];
+  id: Scalars["ID"]["input"];
+  name: Scalars["String"]["input"];
+  slug: Scalars["String"]["input"];
 };
 
 export type UpdatedTestcase = {
@@ -503,6 +515,7 @@ export type ResolversTypes = {
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   UpdateTestcasesInput: UpdateTestcasesInput;
+  UpdateTopicInput: UpdateTopicInput;
   UpdatedTestcase: UpdatedTestcase;
   User: ResolverTypeWrapper<User>;
   UserSolution: ResolverTypeWrapper<UserSolution>;
@@ -540,6 +553,7 @@ export type ResolversParentTypes = {
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   UpdateTestcasesInput: UpdateTestcasesInput;
+  UpdateTopicInput: UpdateTopicInput;
   UpdatedTestcase: UpdatedTestcase;
   User: User;
   UserSolution: UserSolution;
@@ -702,6 +716,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     Partial<MutationUpdateProfileArgs>
+  >;
+  updateTopic?: Resolver<
+    Maybe<ResolversTypes["Topic"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateTopicArgs, "input">
   >;
 };
 

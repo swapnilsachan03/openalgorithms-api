@@ -11,6 +11,7 @@
 # import CreateProblemInput from "../inputs/problem_inputs.graphql"
 # import UpdateProblemInput from "../inputs/problem_inputs.graphql"
 # import CreateTopicInput from "../inputs/topic_inputs.graphql"
+# import UpdateTopicInput from "../inputs/topic_inputs.graphql"
 # import LikeDislikeInput from "../inputs/common.graphql"
 
 type Mutation {
@@ -19,6 +20,7 @@ type Mutation {
   updateProblem(input: UpdateProblemInput): Problem
   deleteProblem(id: ID!): GenericResponse
   createTopic(input: CreateTopicInput!): Topic
+  updateTopic(input: UpdateTopicInput!): Topic
   likeDislikeProblem(input: LikeDislikeInput): GenericResponse
 
   # To-Dos

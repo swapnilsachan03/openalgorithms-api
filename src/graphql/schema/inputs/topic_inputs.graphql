@@ -3,3 +3,10 @@ input CreateTopicInput {
   slug: String!
   description: String!
 }
+
+input UpdateTopicInput {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String!
+}
