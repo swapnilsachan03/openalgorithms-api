@@ -126,11 +126,10 @@ model Hint {
 
 model Topic {
   id          String    @id @default(cuid())
-  name        String
+  name        String    @unique
+  slug        String    @unique
   description String
   problems    Problem[]
-
-  @@unique([name])
 }
 
 model ProblemInteraction {

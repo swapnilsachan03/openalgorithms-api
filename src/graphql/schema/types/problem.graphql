@@ -1,7 +1,8 @@
-# import User from "../types/user.graphql"
 # import ProblemDifficulty from "../enums/global_enums.graphql"
 # import SubmissionStatus from "../enums/global_enums.graphql"
-# import PageInfo from "../types/common.graphql"
+# import User from "./user.graphql"
+# import PageInfo from "./common.graphql"
+# import Topic from "./topic.graphql"
 
 type Problem {
   id: ID!
@@ -24,7 +25,7 @@ type Problem {
   solutions: [Solution]
   userSolutions: [UserSolution]
   hints: [Hint]
-  topics: [String]
+  topics: [Topic]
   editorial: Editorial
   discussions: [Discussion]
   testcases: [Testcase]
@@ -39,13 +40,6 @@ type Hint {
   id: ID!
   content: String
   problemId: ID
-}
-
-type Topic {
-  id: ID!
-  name: String
-  description: String
-  problems: [Problem]
 }
 
 type Example {

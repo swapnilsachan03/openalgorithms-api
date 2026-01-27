@@ -1,9 +1,10 @@
-# import User from '../types/user.graphql'
-# import Problem from '../types/problem.graphql'
-# import UserSolution from '../types/problem.graphql'
-# import GetAllProblemsResponse from '../types/problem.graphql'
+# import User from "../types/user.graphql"
+# import Problem from "../types/problem.graphql"
+# import UserSolution from "../types/problem.graphql"
+# import GetAllProblemsResponse from "../types/problem.graphql"
+# import Topic from "../types/topic.graphql"
 
-# import GetAllProblemsFilterInput from '../inputs/problem_inputs.graphql'
+# import GetAllProblemsFilterInput from "../inputs/problem_inputs.graphql"
 
 type Query {
   user(id: ID!): User
@@ -12,4 +13,5 @@ type Query {
   problem(id: ID, slug: String): Problem
   problems(filters: GetAllProblemsFilterInput): GetAllProblemsResponse
   userSolution(id: ID!): UserSolution
+  topics: [Topic]
 }

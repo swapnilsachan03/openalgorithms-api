@@ -52,6 +52,12 @@ export type CreateProblemInput = {
   topics: Array<Scalars["ID"]["input"]>;
 };
 
+export type CreateTopicInput = {
+  description: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
+  slug: Scalars["String"]["input"];
+};
+
 export type Discussion = {
   __typename?: "Discussion";
   content?: Maybe<Scalars["String"]["output"]>;
@@ -135,6 +141,7 @@ export type LikeDislikeInput = {
 export type Mutation = {
   __typename?: "Mutation";
   createProblem?: Maybe<Problem>;
+  createTopic?: Maybe<Topic>;
   deleteProblem?: Maybe<GenericResponse>;
   likeDislikeProblem?: Maybe<GenericResponse>;
   updateProblem?: Maybe<Problem>;
@@ -143,6 +150,10 @@ export type Mutation = {
 
 export type MutationCreateProblemArgs = {
   input?: InputMaybe<CreateProblemInput>;
+};
+
+export type MutationCreateTopicArgs = {
+  input: CreateTopicInput;
 };
 
 export type MutationDeleteProblemArgs = {
@@ -191,7 +202,7 @@ export type Problem = {
   testcases?: Maybe<Array<Maybe<Testcase>>>;
   timeLimitInSeconds?: Maybe<Scalars["Int"]["output"]>;
   title?: Maybe<Scalars["String"]["output"]>;
-  topics?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  topics?: Maybe<Array<Maybe<Topic>>>;
   totalSubmissions?: Maybe<Scalars["Int"]["output"]>;
   userSolutions?: Maybe<Array<Maybe<UserSolution>>>;
   views?: Maybe<Scalars["Int"]["output"]>;
@@ -208,6 +219,7 @@ export type Query = {
   problem?: Maybe<Problem>;
   problems?: Maybe<GetAllProblemsResponse>;
   profile?: Maybe<User>;
+  topics?: Maybe<Array<Maybe<Topic>>>;
   user?: Maybe<User>;
   userSolution?: Maybe<UserSolution>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -269,6 +281,15 @@ export type Testcase = {
 export type TestcaseInput = {
   input: Scalars["String"]["input"];
   output: Scalars["String"]["input"];
+};
+
+export type Topic = {
+  __typename?: "Topic";
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
+  name?: Maybe<Scalars["String"]["output"]>;
+  problems?: Maybe<Array<Maybe<Problem>>>;
+  slug?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type UpdateProblemInput = {
@@ -452,6 +473,7 @@ export type DirectiveResolverFn<
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
   CreateProblemInput: CreateProblemInput;
+  CreateTopicInput: CreateTopicInput;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]["output"]>;
   Discussion: ResolverTypeWrapper<Discussion>;
   Editorial: ResolverTypeWrapper<Editorial>;
@@ -477,6 +499,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars["String"]["output"]>;
   Testcase: ResolverTypeWrapper<Testcase>;
   TestcaseInput: TestcaseInput;
+  Topic: ResolverTypeWrapper<Topic>;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   UpdateTestcasesInput: UpdateTestcasesInput;
@@ -489,6 +512,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars["Boolean"]["output"];
   CreateProblemInput: CreateProblemInput;
+  CreateTopicInput: CreateTopicInput;
   DateTime: Scalars["DateTime"]["output"];
   Discussion: Discussion;
   Editorial: Editorial;
@@ -512,6 +536,7 @@ export type ResolversParentTypes = {
   String: Scalars["String"]["output"];
   Testcase: Testcase;
   TestcaseInput: TestcaseInput;
+  Topic: Topic;
   UpdateProblemInput: UpdateProblemInput;
   UpdateProfileInput: UpdateProfileInput;
   UpdateTestcasesInput: UpdateTestcasesInput;
@@ -648,6 +673,12 @@ export type MutationResolvers<
     ContextType,
     Partial<MutationCreateProblemArgs>
   >;
+  createTopic?: Resolver<
+    Maybe<ResolversTypes["Topic"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateTopicArgs, "input">
+  >;
   deleteProblem?: Resolver<
     Maybe<ResolversTypes["GenericResponse"]>,
     ParentType,
@@ -755,7 +786,7 @@ export type ProblemResolvers<
   >;
   title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   topics?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    Maybe<Array<Maybe<ResolversTypes["Topic"]>>>,
     ParentType,
     ContextType
   >;
@@ -790,6 +821,11 @@ export type QueryResolvers<
     Partial<QueryProblemsArgs>
   >;
   profile?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  topics?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Topic"]>>>,
+    ParentType,
+    ContextType
+  >;
   user?: Resolver<
     Maybe<ResolversTypes["User"]>,
     ParentType,
@@ -853,6 +889,26 @@ export type TestcaseResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   input?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   output?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+};
+
+export type TopicResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Topic"] =
+    ResolversParentTypes["Topic"],
+> = {
+  description?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  problems?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["Problem"]>>>,
+    ParentType,
+    ContextType
+  >;
+  slug?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 };
 
 export type UserResolvers<
@@ -919,6 +975,7 @@ export type Resolvers<ContextType = any> = {
   Session?: SessionResolvers<ContextType>;
   Solution?: SolutionResolvers<ContextType>;
   Testcase?: TestcaseResolvers<ContextType>;
+  Topic?: TopicResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserSolution?: UserSolutionResolvers<ContextType>;
 };

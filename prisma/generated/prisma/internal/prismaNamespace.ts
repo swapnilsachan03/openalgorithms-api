@@ -2044,6 +2044,7 @@ export type HintScalarFieldEnum =
 export const TopicScalarFieldEnum = {
   id: "id",
   name: "name",
+  slug: "slug",
   description: "description",
 } as const;
 

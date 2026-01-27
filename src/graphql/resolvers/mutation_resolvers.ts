@@ -9,12 +9,15 @@ import {
   updateProfile,
 } from "@controllers/user_controller";
 
+import { createTopic } from "@controllers/topic_controller";
+
 export const mutationResolvers = {
   Mutation: {
     updateProfile,
     createProblem,
     updateProblem,
     deleteProblem,
+    createTopic,
     likeDislikeProblem,
   },
 };

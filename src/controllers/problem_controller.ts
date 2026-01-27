@@ -359,17 +359,6 @@ export const getProblemHints = async (parent: Problem) => {
   return hints;
 };
 
-export const getProblemTopics = async (parent: Problem) => {
-  const { id } = parent;
-
-  const problem = await prisma.problem.findUnique({
-    where: { id },
-    select: { topics: true },
-  });
-
-  return problem?.topics;
-};
-
 export const getProblemEditorial = async (parent: Problem) => {
   const { id } = parent;
 
