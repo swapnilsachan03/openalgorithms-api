@@ -90,7 +90,7 @@ model Problem {
   submissions        Submission[]
   userSolutions      UserSolution[]
   hints              Hint[]
-  topics             Topic[]
+  topics             ProblemTopic[]
   editorial          Editorial?
   discussions        Discussion[]
   problemInteraction ProblemInteraction[]
@@ -125,16 +125,24 @@ model Hint {
 }
 
 model Topic {
-  id          String    @id @default(cuid())
-  name        String
+  id          String         @id @default(cuid())
+  name        String         @unique
+  slug        String         @unique
   description String
-  problems    Problem[]
+  problems    ProblemTopic[]
+}
 
-  @@unique([name])
+model ProblemTopic {
+  problemId String
+  topicId   String
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([problemId, topicId])
 }
 
 model ProblemInteraction {
-  id        String  @id @default(cuid())
   userId    String
   problemId String
   like      Boolean
@@ -142,18 +150,17 @@ model ProblemInteraction {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, problemId])
+  @@id([userId, problemId])
 }
 
 model BookmarkedProblem {
-  id        String @id @default(cuid())
   userId    String
   problemId String
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, problemId])
+  @@id([userId, problemId])
 }
 
 model Example {
@@ -263,27 +270,25 @@ model SubmissionStreak {
 }
 
 model EditorialInteraction {
-  id          String  @id @default(cuid())
   editorialId String
   userId      String
-  liked       Boolean
+  like        Boolean
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   editorial Editorial @relation(fields: [editorialId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, editorialId])
+  @@id([userId, editorialId])
 }
 
 model UserSolutionInteraction {
-  id             String  @id @default(cuid())
   userSolutionId String
   userId         String
-  liked          Boolean
+  like           Boolean
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userSolution UserSolution @relation(fields: [userSolutionId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, userSolutionId])
+  @@id([userId, userSolutionId])
 }
 
 enum SubmissionStatus {
