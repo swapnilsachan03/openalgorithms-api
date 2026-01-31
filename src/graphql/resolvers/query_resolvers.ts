@@ -14,7 +14,7 @@ import {
   getProblemTestcases,
 } from "@controllers/problem_controller";
 
-import { getAllTopics, getProblemTopics } from "@controllers/topic_controller";
+import { getTopics, getProblemTopics } from "@controllers/topic_controller";
 
 import {
   getUserSolution,
@@ -37,7 +37,7 @@ export const queryResolvers = {
     problem: getProblem,
     problems: getAllProblems,
     userSolution: getUserSolution,
-    topics: getAllTopics,
+    topics: getTopics,
   },
   User: {
     sessions: getUserSessions,

@@ -21,6 +21,7 @@ type Mutation {
   deleteProblem(id: ID!): GenericResponse
   createTopic(input: CreateTopicInput!): Topic
   updateTopic(input: UpdateTopicInput!): Topic
+  deleteTopic(id: ID!): GenericResponse
   likeDislikeProblem(input: LikeDislikeInput): GenericResponse
 
   # To-Dos

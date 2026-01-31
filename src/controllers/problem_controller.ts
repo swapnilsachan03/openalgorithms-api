@@ -54,7 +54,7 @@ export const createProblem = async (
       }))
     : [];
 
-  const topicsInput = topics.map(id => ({ id }));
+  const topicsInput = topics.map(topicId => ({ topicId }));
 
   const problem = await prisma.problem.create({
     data: {
@@ -78,7 +78,7 @@ export const createProblem = async (
       hints: { createMany: { data: hintsInput } },
       testcases: { createMany: { data: testcases } },
       topics: {
-        connect: topicsInput,
+        createMany: { data: topicsInput },
       },
       ...(editorial
         ? {
@@ -133,7 +133,7 @@ export const updateProblem = async (
     content: hint,
   }));
 
-  const topicsInput = _.map(topics, id => ({ id }));
+  const topicsInput = _.map(topics, topicId => ({ topicId }));
 
   const addedTestcases = testcases?.addedTestcases ?? [];
   const updatedTestcases = testcases?.updatedTestcases ?? [];
@@ -164,7 +164,8 @@ export const updateProblem = async (
         : {}),
       hints: { createMany: { data: hintsInput } },
       topics: {
-        connect: topicsInput,
+        deleteMany: {},
+        createMany: { data: topicsInput },
       },
       testcases: {
         createMany: { data: addedTestcases },
@@ -248,7 +249,7 @@ export const getAllProblems = async (
   const whereClause = {
     ...(search ? { title: { contains: search } } : {}),
     ...(difficulty ? { difficulty: { equals: difficulty } } : {}),
-    ...(topics ? { topics: { some: { id: { in: topics } } } } : {}),
+    ...(topics ? { topics: { some: { topicId: { in: topics } } } } : {}),
   };
 
   const [problems, totalCount] = await Promise.all([
