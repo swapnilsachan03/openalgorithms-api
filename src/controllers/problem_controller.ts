@@ -48,13 +48,8 @@ export const createProblem = async (
     testcases,
   } = args.input;
 
-  const hintsInput = hints
-    ? hints.map(hint => ({
-        content: hint,
-      }))
-    : [];
-
-  const topicsInput = topics.map(topicId => ({ topicId }));
+  const hintsInput = _.map(hints, content => ({ content }));
+  const topicsInput = _.map(topics, topicId => ({ topicId }));
 
   const problem = await prisma.problem.create({
     data: {
@@ -129,10 +124,7 @@ export const updateProblem = async (
     testcases,
   } = args.input;
 
-  const hintsInput = _.map(hints, hint => ({
-    content: hint,
-  }));
-
+  const hintsInput = _.map(hints, content => ({ content }));
   const topicsInput = _.map(topics, topicId => ({ topicId }));
 
   const addedTestcases = testcases?.addedTestcases ?? [];
@@ -162,7 +154,10 @@ export const updateProblem = async (
             },
           }
         : {}),
-      hints: { createMany: { data: hintsInput } },
+      hints: {
+        deleteMany: {},
+        createMany: { data: hintsInput },
+      },
       topics: {
         deleteMany: {},
         createMany: { data: topicsInput },
